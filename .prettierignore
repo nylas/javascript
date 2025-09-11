@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# Package manager files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Documentation (often has specific formatting)
+*.md
+**/*.md
+
+# Generated files
+coverage/
+**/coverage/
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+**/*.log

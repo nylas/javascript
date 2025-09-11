@@ -1,0 +1,64 @@
+{
+  "name": "@nylas/web",
+  "version": "1.0.0",
+  "description": "Modern, open source JavaScript/TypeScript packages for integrating with the Nylas platform",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.6.3",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:watch": "pnpm -r test:watch",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:packages": "pnpm -r format",
+    "format:packages:check": "pnpm -r format:check",
+    "clean": "pnpm -r clean",
+    "dev": "pnpm -r dev",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "keywords": [
+    "nylas",
+    "email",
+    "calendar",
+    "contacts",
+    "oauth",
+    "authentication",
+    "api",
+    "sdk",
+    "typescript",
+    "javascript",
+    "esm",
+    "web",
+    "browser",
+    "node",
+    "integration",
+    "platform"
+  ],
+  "author": "Nylas Inc. <support@nylas.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/nylas/web#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nylas/web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nylas/web/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/nylas"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

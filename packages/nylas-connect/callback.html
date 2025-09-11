@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Callback</title>
+  </head>
+  <body>
+    <script type="module">
+      import { auth } from "./auth-instance.js";
+      try {
+        const result = await auth.callback();
+        console.log("Authentication successful:", result);
+      } catch (error) {
+        console.error("Authentication failed:", error);
+      }
+    </script>
+  </body>
+</html>
