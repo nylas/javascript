@@ -10,14 +10,19 @@
   },
   "packageManager": "pnpm@10.6.3",
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "test:watch": "pnpm -r test:watch",
-    "format": "pnpm -r format",
-    "format:check": "pnpm -r format:check",
-    "clean": "pnpm -r clean",
-    "dev": "pnpm -r dev",
-    "typecheck": "pnpm -r typecheck"
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "test:watch": "nx run-many -t test:watch",
+    "format": "nx run-many -t format",
+    "format:check": "nx run-many -t format:check",
+    "clean": "nx run-many -t clean",
+    "dev": "nx run-many -t dev",
+    "typecheck": "nx run-many -t typecheck",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "publish": "nx run-many -t build && changeset publish",
+    "publish:dry-run": "nx run-many -t build && changeset publish --dry-run",
+    "publish:no-build": "changeset publish"
   },
   "keywords": [
     "nylas",
@@ -55,6 +60,8 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "nx": "21.5.2",
     "prettier": "^3.4.2"
   }
 }

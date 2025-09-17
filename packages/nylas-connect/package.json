@@ -26,7 +26,8 @@
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "keywords": [
     "nylas",

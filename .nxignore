@@ -1,0 +1,11 @@
+# Nx ignore patterns
+node_modules/
+dist/
+.git/
+.changeset/
+*.log
+.DS_Store
+coverage/
+.nyc_output/
+*.html
+static/

@@ -129,3 +129,10 @@ area51
 
 ###### Docker ######
 !.docker/**
+
+
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
