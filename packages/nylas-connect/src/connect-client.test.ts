@@ -137,7 +137,7 @@ describe("NylasConnect (fundamentals)", () => {
     expect(localStorage.getItem("@nylas/connect:token_g")).toBeNull();
   });
 
-  it("enableDebug() and disableDebug() control logger levels correctly", () => {
+  it("setLogLevel controls logger levels correctly", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
@@ -153,43 +153,7 @@ describe("NylasConnect (fundamentals)", () => {
     };
 
     try {
-      // Test enableDebug - should enable debug level logging
-      auth.enableDebug();
-
-      // Reset spies
-      Object.values(consoleSpy).forEach((spy) => spy.mockClear());
-
-      // Test that debug messages now show
-      logger.debug("test debug message");
-      logger.info("test info message");
-
-      expect(consoleSpy.log).toHaveBeenCalledWith(
-        expect.stringMatching(/\[.*\] \[NYLAS-AUTH\] \[DEBUG\]/),
-        "test debug message",
-      );
-      expect(consoleSpy.info).toHaveBeenCalledWith(
-        expect.stringMatching(/\[.*\] \[NYLAS-AUTH\] \[INFO\]/),
-        "test info message",
-      );
-
-      // Test disableDebug - should disable all logging
-      auth.disableDebug();
-
-      // Reset spies
-      Object.values(consoleSpy).forEach((spy) => spy.mockClear());
-
-      // Test that no messages show now
-      logger.debug("debug should not show");
-      logger.info("info should not show");
-      logger.warn("warn should not show");
-      logger.error("error should not show");
-
-      expect(consoleSpy.log).not.toHaveBeenCalled();
-      expect(consoleSpy.info).not.toHaveBeenCalled();
-      expect(consoleSpy.warn).not.toHaveBeenCalled();
-      expect(consoleSpy.error).not.toHaveBeenCalled();
-
-      // Test setLogLevel method
+      // Set WARN level - only warn and error messages should show
       auth.setLogLevel(LogLevel.WARN);
 
       // Reset spies
@@ -211,6 +175,18 @@ describe("NylasConnect (fundamentals)", () => {
         expect.stringMatching(/\[.*\] \[NYLAS-AUTH\] \[ERROR\]/),
         "error should show",
       );
+
+      // Disable all logs
+      auth.setLogLevel("off");
+      Object.values(consoleSpy).forEach((spy) => spy.mockClear());
+      logger.debug("debug off");
+      logger.info("info off");
+      logger.warn("warn off");
+      logger.error("error off");
+      expect(consoleSpy.log).not.toHaveBeenCalled();
+      expect(consoleSpy.info).not.toHaveBeenCalled();
+      expect(consoleSpy.warn).not.toHaveBeenCalled();
+      expect(consoleSpy.error).not.toHaveBeenCalled();
     } finally {
       // Clean up spies
       Object.values(consoleSpy).forEach((spy) => spy.mockRestore());
@@ -672,84 +648,6 @@ describe("NylasConnect (sessions, validation, and events)", () => {
     expect(localStorage.getItem("@nylas/connect:token_default")).toBeNull();
   });
 
-  it("validateToken returns true when response ok and has data", async () => {
-    const auth = new NylasConnect({
-      clientId,
-      redirectUri,
-      apiUrl: "https://api.nylas.com",
-    });
-
-    const validSession = {
-      accessToken: "t_ok",
-      idToken: "h.e.y",
-      grantId: "g_ok",
-      expiresAt: Date.now() + 60_000,
-      scope: "email",
-    };
-    localStorage.setItem(
-      "@nylas/connect:token_default",
-      JSON.stringify(validSession),
-    );
-
-    const spy = vi.fn();
-    auth.onConnectStateChange(spy);
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ data: { grant_id: "g_ok" } }),
-      }),
-    );
-
-    const result = await auth.validateToken();
-    expect(result).toBe(true);
-    expect(spy).not.toHaveBeenCalledWith(
-      "TOKEN_VALIDATION_ERROR",
-      expect.anything(),
-      expect.anything(),
-    );
-  });
-
-  it("validateToken returns false and emits TOKEN_VALIDATION_ERROR when invalid", async () => {
-    const auth = new NylasConnect({
-      clientId,
-      redirectUri,
-      apiUrl: "https://api.nylas.com",
-    });
-
-    const session = {
-      accessToken: "t_bad",
-      idToken: "h.e.y",
-      grantId: "g_bad",
-      expiresAt: Date.now() + 60_000,
-      scope: "email",
-    };
-    localStorage.setItem(
-      "@nylas/connect:token_default",
-      JSON.stringify(session),
-    );
-
-    const spy = vi.fn();
-    auth.onConnectStateChange(spy);
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({}),
-      }),
-    );
-
-    const result = await auth.validateToken();
-    expect(result).toBe(false);
-    expect(spy).toHaveBeenCalledWith(
-      "TOKEN_VALIDATION_ERROR",
-      null,
-      expect.objectContaining({ grantId: "g_bad" }),
-    );
-  });
-
   it("onAuthStateChange unsubscribe stops subsequent emissions", async () => {
     const auth = new NylasConnect({
       clientId,
@@ -767,48 +665,6 @@ describe("NylasConnect (sessions, validation, and events)", () => {
 
     await auth.logout("any"); // would emit SIGNED_OUT if subscribed
     expect(spy).not.toHaveBeenCalled();
-  });
-
-  it("getGrantInfo emits GRANT_PROFILE_LOADED with source 'token'", async () => {
-    const auth = new NylasConnect({
-      clientId,
-      redirectUri,
-      apiUrl: "https://api.nylas.com",
-    });
-
-    const grantInfo = {
-      id: "user_1",
-      email: "alice@example.com",
-      name: "Alice",
-      picture: "https://example.com/p.png",
-      provider: "google",
-      emailVerified: true,
-    };
-
-    const session = {
-      accessToken: "t",
-      idToken: "h.e.y",
-      grantId: "g1",
-      expiresAt: Date.now() + 60_000,
-      scope: "email profile",
-      grantInfo,
-    };
-    localStorage.setItem(
-      "@nylas/connect:token_default",
-      JSON.stringify(session),
-    );
-
-    const spy = vi.fn();
-    auth.onConnectStateChange(spy);
-
-    const result = await auth.getGrantInfo();
-    expect(result).toEqual(grantInfo);
-
-    expect(spy).toHaveBeenCalledWith(
-      "GRANT_PROFILE_LOADED",
-      expect.objectContaining({ grantId: "g1" }),
-      { grantInfo, source: "token" },
-    );
   });
 
   describe("getConnectionStatus", () => {

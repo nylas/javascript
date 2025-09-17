@@ -674,7 +674,7 @@ export class NylasConnect {
   /**
    * Validate an access token
    */
-  async validateToken(token?: string): Promise<boolean> {
+  private async validateToken(token?: string): Promise<boolean> {
     let accessToken = token;
     let grantId = "unknown";
 
@@ -726,32 +726,6 @@ export class NylasConnect {
 
       return false;
     }
-  }
-
-  /**
-   * Get grant information from stored token
-   */
-  async getGrantInfo(grantId?: string): Promise<GrantInfo | null> {
-    const session = await this.getSession(grantId);
-    const grantInfo = session?.grantInfo ?? null;
-
-    if (grantInfo) {
-      // Emit GRANT_PROFILE_LOADED event
-      this.triggerConnectStateChange("GRANT_PROFILE_LOADED", session, {
-        grantInfo,
-        source: "token",
-      });
-    }
-
-    return grantInfo;
-  }
-
-  /**
-   * Check if a grant is currently connected
-   */
-  async isConnected(grantId?: string): Promise<boolean> {
-    const session = await this.getSession(grantId);
-    return session !== null;
   }
 
   /**
@@ -846,59 +820,11 @@ export class NylasConnect {
   }
 
   /**
-   * Enable debug logging
-   */
-  enableDebug(): void {
-    logger.enable();
-  }
-
-  /**
-   * Disable debug logging
-   */
-  disableDebug(): void {
-    logger.disable();
-  }
-
-  /**
    * Set logging level
    * @param level - Log level: LogLevel enum values or "off"
    */
   setLogLevel(level: LogLevel | "off"): void {
     logger.setLevel(level);
-  }
-
-  /**
-   * Get access to the logger instance for advanced usage
-   */
-  get logger(): Pick<
-    typeof logger,
-    | "debug"
-    | "info"
-    | "warn"
-    | "error"
-    | "log"
-    | "setLevel"
-    | "enable"
-    | "disable"
-  > {
-    return {
-      debug: logger.debug.bind(logger),
-      info: logger.info.bind(logger),
-      warn: logger.warn.bind(logger),
-      error: logger.error.bind(logger),
-      log: logger.log.bind(logger),
-      setLevel: logger.setLevel.bind(logger),
-      enable: logger.enable.bind(logger),
-      disable: logger.disable.bind(logger),
-    };
-  }
-
-  /**
-   * Check if automatic callback handling is enabled
-   * @returns true if auto callback handling is enabled
-   */
-  isAutoCallbackEnabled(): boolean {
-    return this.config.autoHandleCallback;
   }
 
   /**

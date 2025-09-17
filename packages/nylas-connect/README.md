@@ -479,7 +479,7 @@ Hook return values (essentials):
 | connect     | (opts) => Promise<ConnectResult\|string> | Start auth flow          |
 | logout      | () => Promise<void>                      | Sign out                 |
 
-Optional: `enableDebug`, `disableDebug`, `setLogLevel`, `logger`, `connectClient`.
+Optional: `setLogLevel`, `connectClient`.
 
 ---
 
@@ -492,8 +492,6 @@ Optional: `enableDebug`, `disableDebug`, `setLogLevel`, `logger`, `connectClient
 | getAuthUrl(options?)          | Promise<{ url: string; state: string; scopes: string[] }> | Build auth URL for backend-only exchange |
 | getSession(grantId?)          | Promise<SessionData\|null>                                | Get current session                      |
 | getAccessToken(grantId?)      | Promise<string\|null>                                     | Get stored access token                  |
-| getGrantInfo(grantId?)        | Promise<GrantInfo\|null>                                  | Get stored grant info                    |
-| isConnected(grantId?)         | Promise<boolean>                                          | Is grant currently connected?            |
 | getConnectionStatus(grantId?) | Promise<ConnectionStatus>                                 | Get connection status                    |
 | logout(grantId?)              | Promise<void>                                             | Clear stored tokens and logout           |
 | onConnectStateChange(cb)      | () => void                                                | Subscribe to connect state changes       |
@@ -536,14 +534,12 @@ Method groups and when to use:
 ### Session
 
 - `getSession(grantId?)`: Read the current session for a grant.
-- `isConnected(grantId?)`: Check whether a grant is connected.
 - `getConnectionStatus(grantId?)`: Inspect connection state.
 - `logout(grantId?)`: Clear stored tokens and logout.
 
 ### Tokens & Grants
 
 - `getAccessToken(grantId?)`: Read the stored access token, if available.
-- `getGrantInfo(grantId?)`: Read grant metadata (e.g., name, email).
 
 ### Events
 
@@ -567,8 +563,6 @@ Common errors:
 <summary>Logging</summary>
 
 ```ts
-nylasConnect.enableDebug();
-nylasConnect.disableDebug();
 nylasConnect.setLogLevel("warn");
 ```
 
@@ -614,7 +608,7 @@ Symptom → Cause → Fix
 - Session not persisting → Memory-only mode or blocked storage → Set `persistTokens: true`; allow localStorage.
 - Redirect mismatch → `redirectUri` differs from Dashboard config → Ensure exact match including protocol/port/path.
 - Region errors/CORS → Wrong `apiUrl` vs account region → Use correct region base URL (US/EU) and allow domain in Dashboard.
-- Token expired → Session stale → Re-auth or refresh; check `isConnected()` and handle expiration.
+- Token expired → Session stale → Re-auth or refresh; check `getConnectionStatus()` and handle expiration.
 - Inline flow not navigating → Ensure you return early after setting `window.location.href`.
 - Connect called outside a user gesture → Browsers may block popups; call directly in a click/tap handler (avoid extra awaits first).
 
@@ -663,7 +657,7 @@ License: MIT
 When handling multiple accounts, pass a `grantId` to target a specific connection:
 
 ```ts
-const isPrimaryConnected = await nylasConnect.isConnected(primaryGrantId);
+const status = await nylasConnect.getConnectionStatus(primaryGrantId);
 const token = await nylasConnect.getAccessToken(secondaryGrantId);
 await nylasConnect.logout(primaryGrantId);
 ```
