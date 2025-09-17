@@ -518,25 +518,6 @@ Symptom → Cause → Fix
 
 ---
 
-## Example App
-
-- Location: `apps/nylas-connect-app`
-- Run: `pnpm -w --filter nylas-connect-app dev` (workspace scripts)
-- Shows: minimal connect (popup) and callback wiring
-
-Setup notes:
-
-- Set `NYLAS_CLIENT_ID` and `NYLAS_REDIRECT_URI` in your app env (with proper bundler prefix).
-- Callback file/location: `apps/nylas-connect-app/public/auth/callback.html`.
-- For Vite, create `apps/nylas-connect-app/.env` containing:
-
-```env
-VITE_NYLAS_CLIENT_ID=your-nylas-client-id
-VITE_NYLAS_REDIRECT_URI=http://localhost:3000/auth/callback
-```
-
----
-
 ## Tech Specs & License
 
 - ESM-only module format (no CommonJS)
