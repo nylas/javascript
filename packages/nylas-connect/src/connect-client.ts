@@ -103,7 +103,7 @@ export class NylasConnect {
         config.redirectUri ||
         this.getEnvVar("NYLAS_REDIRECT_URI") ||
         this.detectRedirectUri(),
-      apiUrl: config.apiUrl || "https://api.nylas.com",
+      apiUrl: config.apiUrl || "https://api.us.nylas.com",
       environment,
       defaultScopes: config.defaultScopes,
       debug: config.debug ?? environment === "development",

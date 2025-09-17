@@ -34,7 +34,7 @@ describe("NylasConnect (fundamentals)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     const url = await auth.connect();
@@ -58,7 +58,7 @@ describe("NylasConnect (fundamentals)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     // Prime storage by calling connect() first
@@ -112,7 +112,7 @@ describe("NylasConnect (fundamentals)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     // Seed a fake session
@@ -141,7 +141,7 @@ describe("NylasConnect (fundamentals)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     // Spy on console methods to verify logger behavior
@@ -209,7 +209,7 @@ describe("NylasConnect (backend-only getAuthUrl)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     const { url, state, scopes } = await auth.getAuthUrl();
@@ -620,7 +620,7 @@ describe("NylasConnect (sessions, validation, and events)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
 
     const expiredSession = {
@@ -652,7 +652,7 @@ describe("NylasConnect (sessions, validation, and events)", () => {
     const auth = new NylasConnect({
       clientId,
       redirectUri,
-      apiUrl: "https://api.nylas.com",
+      apiUrl: "https://api.us.nylas.com",
     });
     const spy = vi.fn();
     const unsubscribe = auth.onConnectStateChange(spy);
@@ -672,7 +672,7 @@ describe("NylasConnect (sessions, validation, and events)", () => {
       const auth = new NylasConnect({
         clientId,
         redirectUri,
-        apiUrl: "https://api.nylas.com",
+        apiUrl: "https://api.us.nylas.com",
       });
       const spy = vi.fn();
       auth.onConnectStateChange(spy);
@@ -690,7 +690,7 @@ describe("NylasConnect (sessions, validation, and events)", () => {
       const auth = new NylasConnect({
         clientId,
         redirectUri,
-        apiUrl: "https://api.nylas.com",
+        apiUrl: "https://api.us.nylas.com",
       });
 
       const session = {
@@ -726,7 +726,7 @@ describe("NylasConnect (sessions, validation, and events)", () => {
       const auth = new NylasConnect({
         clientId,
         redirectUri,
-        apiUrl: "https://api.nylas.com",
+        apiUrl: "https://api.us.nylas.com",
       });
 
       const session = {

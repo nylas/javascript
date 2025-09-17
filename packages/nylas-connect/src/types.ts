@@ -81,7 +81,6 @@ export interface ConnectConfig {
   redirectUri?: string;
   /** Nylas Auth API URL (defaults based on environment) */
   apiUrl?:
-    | "https://api.nylas.com"
     | "https://api.us.nylas.com"
     | "https://api.eu.nylas.com"
     | string;
