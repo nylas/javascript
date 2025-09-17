@@ -18,7 +18,6 @@ Modern, secure OAuth connection library for Nylas APIs.
 - Works in modern browsers and Node 22+
 - Automatic session, token, and scope management
 - Popup and inline OAuth flows
-- React hooks and components included
 
 [**📖 Documentation →**](./packages/nylas-connect/README.md)
 
