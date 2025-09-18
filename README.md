@@ -27,23 +27,6 @@ npm install @nylas/connect
 
 ---
 
-*More packages coming soon! This repository will expand to include additional Nylas integration tools and utilities.*
-
-## 🚀 Quick Start
-
-1. **Install a package**
-   ```bash
-   npm install @nylas/connect
-   ```
-
-2. **Follow the package documentation**
-   - Each package has comprehensive documentation in its README
-   - Examples and guides are included
-
-3. **Get your Nylas credentials**
-   - Sign up at [nylas.com](https://nylas.com)
-   - Get your Client ID from the [Nylas Dashboard](https://dashboard.nylas.com)
-
 ## 🛠 Development
 
 This is a monorepo managed with **pnpm workspaces**.
