@@ -78,7 +78,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ## 🆘 Support
 
 - **📚 Documentation**: [developer.nylas.com](https://developer.nylas.com)
-- **💬 Community**: [GitHub Discussions](https://github.com/nylas/web/discussions)
+- **💬 Community**: [Forums](https://forums.nylas.com)
 - **🐛 Issues**: [GitHub Issues](https://github.com/nylas/web/issues)
 - **✉️ Email**: support@nylas.com
 

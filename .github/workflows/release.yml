@@ -75,9 +75,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          # This expects a script called "version" and "publish"
-          version: pnpm version
-          publish: pnpm publish:dry-run
+          version: pnpm run version
+          publish: pnpm run publish
           title: "chore: version packages"
           commit: "chore: version packages"
           createGithubReleases: true
