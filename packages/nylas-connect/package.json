@@ -50,7 +50,7 @@
   "devDependencies": {
     "@types/node": "^20.11.13",
     "@vitest/coverage-v8": "^2.1.9",
-    "happy-dom": "^13.10.1",
+    "happy-dom": "^15.10.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vite-plugin-dts": "^3.7.0",
