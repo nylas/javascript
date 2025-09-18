@@ -80,10 +80,7 @@ export interface ConnectConfig {
   /** Redirect URI for OAuth flow (can be read from NYLAS_REDIRECT_URI env var) */
   redirectUri?: string;
   /** Nylas Auth API URL (defaults based on environment) */
-  apiUrl?:
-    | "https://api.us.nylas.com"
-    | "https://api.eu.nylas.com"
-    | string;
+  apiUrl?: "https://api.us.nylas.com" | "https://api.eu.nylas.com" | string;
   /** Environment (auto-detected or specified) */
   environment?: Environment;
   /** Default scopes to request - can be a simple array or provider-specific object */

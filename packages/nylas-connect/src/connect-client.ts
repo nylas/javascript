@@ -526,16 +526,11 @@ export class NylasConnect {
   private cleanupCallbackState(): void {
     const now = Date.now();
     const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutes
-    const STATE_TTL = 15 * 60 * 1000; // 15 minutes (matches auth state TTL)
 
     // Only cleanup every 5 minutes to avoid excessive work
     if (now - this.callbackState.lastCleanup < CLEANUP_INTERVAL) {
       return;
     }
-
-    // Remove old processed codes (older than 15 minutes)
-    const cutoffTime = now - STATE_TTL;
-
     // Note: We can't easily track when codes were processed without changing the Set
     // For now, we'll periodically clear the entire processed set since auth codes
     // are single-use and this prevents indefinite memory growth
