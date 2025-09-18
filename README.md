@@ -1,4 +1,4 @@
-# Nylas Web
+# Nylas JavaScript
 
 > Modern, open source JavaScript/TypeScript packages for integrating with the Nylas platform
 
