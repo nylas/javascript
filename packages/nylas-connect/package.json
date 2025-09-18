@@ -1,11 +1,12 @@
 {
   "name": "@nylas/connect",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Modern, lightweight Nylas connection library with PKCE support",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "private": false,
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -23,7 +24,7 @@
     "typecheck": "tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
     "format:check": "pnpm --workspace-root prettier --check packages/nylas-connect/",
-    "lint": "oxlint --fix .",
+    "lint": "oxlint --fix . && exit 0",
     "lint:check": "oxlint .",
     "clean": "rm -rf dist",
     "test": "vitest run",
@@ -42,6 +43,9 @@
   ],
   "author": "Nylas Inc.",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@10.7.1",
   "devDependencies": {
     "@types/node": "^20.11.13",
