@@ -39,7 +39,7 @@ export async function createStorage(): Promise<TokenStorage> {
       const { BrowserTokenStorage } = await import("./token-storage");
       return new BrowserTokenStorage();
     }
-  } catch (error) {
+  } catch {
     // localStorage not available or blocked
   }
 

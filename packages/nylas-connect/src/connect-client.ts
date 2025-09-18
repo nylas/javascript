@@ -165,12 +165,18 @@ export class NylasConnect {
    * Detect current environment
    */
   private detectEnvironment(specified?: Environment): Environment {
-    if (specified) return specified;
+    if (specified) {
+      return specified;
+    }
 
     // Check environment variables
     const nodeEnv = this.getEnvVar("NODE_ENV");
-    if (nodeEnv === "production") return "production";
-    if (nodeEnv === "staging" || nodeEnv === "test") return "staging";
+    if (nodeEnv === "production") {
+      return "production";
+    }
+    if (nodeEnv === "staging" || nodeEnv === "test") {
+      return "staging";
+    }
 
     // Check if running in development (localhost, etc.)
     if (globalThis.window) {
@@ -727,7 +733,9 @@ export class NylasConnect {
    */
   async getConnectionStatus(grantId?: string): Promise<ConnectionStatus> {
     const session = await this.getSession(grantId);
-    if (!session) return "not_connected";
+    if (!session) {
+      return "not_connected";
+    }
     const isValid = await this.validateToken(session.accessToken);
     const status = isValid ? "connected" : "invalid";
 
@@ -828,7 +836,10 @@ export class NylasConnect {
     scopes?: string[] | Partial<Record<Provider, string[]>>,
   ): scopes is Partial<Record<Provider, string[]>> {
     return (
-      scopes != null && !Array.isArray(scopes) && typeof scopes === "object"
+      scopes !== null &&
+      scopes !== undefined &&
+      !Array.isArray(scopes) &&
+      typeof scopes === "object"
     );
   }
 
