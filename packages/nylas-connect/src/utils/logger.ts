@@ -103,7 +103,9 @@ class NylasConnectLogger implements Logger {
   }
 
   private formatMessage(level: LogLevel, ...args: any[]): void {
-    if (!this.shouldLog(level)) {return;}
+    if (!this.shouldLog(level)) {
+      return;
+    }
 
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [NYLAS-AUTH] [${level.toUpperCase()}]`;
