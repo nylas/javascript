@@ -526,7 +526,6 @@ export class NylasConnect {
   private cleanupCallbackState(): void {
     const now = Date.now();
     const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutes
-
     // Only cleanup every 5 minutes to avoid excessive work
     if (now - this.callbackState.lastCleanup < CLEANUP_INTERVAL) {
       return;

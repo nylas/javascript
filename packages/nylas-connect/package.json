@@ -23,6 +23,8 @@
     "type-check": "tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
     "format:check": "pnpm --workspace-root prettier --check packages/nylas-connect/",
+    "lint": "oxlint --fix .",
+    "lint:check": "oxlint .",
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",

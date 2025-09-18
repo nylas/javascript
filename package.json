@@ -15,6 +15,8 @@
     "test:watch": "nx run-many -t test:watch",
     "format": "nx run-many -t format",
     "format:check": "nx run-many -t format:check",
+    "lint": "nx run-many -t lint --parallel",
+    "lint:check": "nx run-many -t lint:check --parallel",
     "clean": "nx run-many -t clean",
     "dev": "nx run-many -t dev",
     "typecheck": "nx run-many -t typecheck",
@@ -62,6 +64,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "nx": "21.5.2",
+    "oxlint": "^1.16.0",
     "prettier": "^3.4.2"
   }
 }

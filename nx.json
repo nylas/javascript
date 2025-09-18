@@ -16,6 +16,13 @@
     "format:check": {
       "cache": true
     },
+    "lint": {
+      "cache": false
+    },
+    "lint:check": {
+      "cache": true,
+      "inputs": ["default", "^default"]
+    },
     "typecheck": {
       "cache": true,
       "inputs": ["default", "^default"]
@@ -41,6 +48,7 @@
           "test",
           "format",
           "format:check",
+          "lint:check",
           "typecheck"
         ]
       }
