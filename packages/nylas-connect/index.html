@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nylas Auth - Development</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f8f9fa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Open the console to see the output</h1>
+    <script type="module">
+      import { auth } from "./auth-instance.js";
+
+      auth.connect().then((result) => {
+        //{ method: "popup" }
+        console.group("Auth result");
+        console.log(result);
+        console.groupEnd();
+      });
+    </script>
+  </body>
+</html>

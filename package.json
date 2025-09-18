@@ -1,0 +1,72 @@
+{
+  "name": "@nylas/web",
+  "version": "1.0.0",
+  "description": "Modern, open source JavaScript/TypeScript packages for integrating with the Nylas platform",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.6.3",
+  "scripts": {
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "test:watch": "nx run-many -t test:watch",
+    "format": "nx run-many -t format",
+    "format:check": "nx run-many -t format:check",
+    "lint": "nx run-many -t lint --parallel",
+    "lint:check": "nx run-many -t lint:check --parallel",
+    "clean": "nx run-many -t clean",
+    "dev": "nx run-many -t dev",
+    "typecheck": "nx run-many -t typecheck",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "publish": "nx run-many -t build && changeset publish",
+    "publish:dry-run": "nx run-many -t build && changeset publish --dry-run",
+    "publish:no-build": "changeset publish",
+    "postinstall": "husky install"
+  },
+  "keywords": [
+    "nylas",
+    "email",
+    "calendar",
+    "contacts",
+    "oauth",
+    "authentication",
+    "api",
+    "sdk",
+    "typescript",
+    "javascript",
+    "esm",
+    "web",
+    "browser",
+    "node",
+    "integration",
+    "platform"
+  ],
+  "author": "Nylas Inc. <support@nylas.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/nylas/web#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nylas/web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nylas/web/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/nylas"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "husky": "^8.0.3",
+    "nx": "21.5.2",
+    "oxlint": "^1.16.0",
+    "prettier": "^3.4.2"
+  }
+}
