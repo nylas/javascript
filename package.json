@@ -24,7 +24,8 @@
     "version": "changeset version",
     "publish": "nx run-many -t build && changeset publish",
     "publish:dry-run": "nx run-many -t build && changeset publish --dry-run",
-    "publish:no-build": "changeset publish"
+    "publish:no-build": "changeset publish",
+    "postinstall": "husky install"
   },
   "keywords": [
     "nylas",
@@ -63,6 +64,7 @@
   ],
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
+    "husky": "^8.0.3",
     "nx": "21.5.2",
     "oxlint": "^1.16.0",
     "prettier": "^3.4.2"

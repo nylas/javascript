@@ -11,6 +11,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.27.9
         version: 2.29.7(@types/node@20.19.13)
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
       nx:
         specifier: 21.5.2
         version: 21.5.2
@@ -1066,6 +1069,11 @@ packages:
 
   human-id@4.1.1:
     resolution: {integrity: sha512-3gKm/gCSUipeLsRYZbbdA1BD83lBoWUkZ7G9VFrhWPAU76KwYo5KR8V28bpoPm/ygy0x5/GCbpRQdY7VLYCoIg==}
+    hasBin: true
+
+  husky@8.0.3:
+    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
+    engines: {node: '>=14'}
     hasBin: true
 
   iconv-lite@0.7.0:
@@ -2827,6 +2835,8 @@ snapshots:
   html-escaper@2.0.2: {}
 
   human-id@4.1.1: {}
+
+  husky@8.0.3: {}
 
   iconv-lite@0.7.0:
     dependencies:
