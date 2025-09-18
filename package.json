@@ -1,5 +1,5 @@
 {
-  "name": "@nylas/web",
+  "name": "@nylas/javascript",
   "version": "1.0.0",
   "description": "Modern, open source JavaScript/TypeScript packages for integrating with the Nylas platform",
   "type": "module",
