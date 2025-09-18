@@ -136,3 +136,6 @@ area51
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+ 
+# Nx Project Graph export assets
+static/
