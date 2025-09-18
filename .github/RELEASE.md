@@ -42,27 +42,6 @@ pnpm publish
 
 ## Setup Requirements
 
-### NPM Token Setup
-
-1. **Create NPM Token**:
-   - Go to [npmjs.com](https://www.npmjs.com) → Account → Access Tokens
-   - Create a new "Automation" token with "Publish" permissions
-   - For scoped packages (`@nylas/*`), ensure you have publish access to the `@nylas` organization
-
-2. **Add to GitHub Secrets**:
-   - Go to your GitHub repository → Settings → Secrets and variables → Actions
-   - Add a new secret named `NPM_TOKEN` with your token value
-
-### Branch Protection (Recommended)
-
-Set up branch protection for the release process:
-
-1. Go to Settings → Branches → Add rule for `main`
-2. Enable:
-   - "Require a pull request before merging"
-   - "Require status checks to pass before merging"
-   - Select the "PR Tests" check
-3. This ensures release PRs are reviewed and tests pass
 
 ## Changeset Types
 

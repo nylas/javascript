@@ -20,7 +20,7 @@
     "build": "tsc && vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
     "format:check": "pnpm --workspace-root prettier --check packages/nylas-connect/",
     "lint": "oxlint --fix .",
