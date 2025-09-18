@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 0.0.3
+
+### Patch Changes
+
+- 2ef30c8: Fix NPM publishing configuration by adding publishConfig for scoped package access
+
 ## 0.0.2
 
 ### Patch Changes
