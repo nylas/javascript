@@ -759,3 +759,431 @@ describe("NylasConnect (sessions, validation, and events)", () => {
     });
   });
 });
+
+describe("NylasConnect (custom code exchange)", () => {
+  const clientId = "client_123";
+  const redirectUri = "https://app.example/callback";
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
+
+  it("uses custom code exchange method when provided in config", async () => {
+    const mockCustomExchange = vi.fn().mockResolvedValue({
+      accessToken: "custom_access_token",
+      idToken: "custom_id_token",
+      grantId: "custom_grant_123",
+      expiresAt: Date.now() + 3600000,
+      scope: "email",
+      grantInfo: {
+        id: "user123",
+        email: "test@example.com",
+        name: "Test User",
+        provider: "google",
+      },
+    });
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    // Mock successful token validation
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ data: { grant_id: "custom_grant_123" } }),
+      }),
+    );
+
+    // Simulate popup callback
+    const spy = vi.fn();
+    auth.onConnectStateChange(spy);
+
+    // Simulate the callback flow
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+    const result = await auth.handleRedirectCallback(callbackUrl);
+
+    // Verify custom exchange was called with correct parameters
+    expect(mockCustomExchange).toHaveBeenCalledWith({
+      code: "auth_code_123",
+      state: "stateXYZ",
+      codeVerifier: "verifier123",
+      scopes: [],
+      provider: undefined,
+      clientId,
+      redirectUri,
+    });
+
+    // Verify result
+    expect(result.accessToken).toBe("custom_access_token");
+    expect(result.grantId).toBe("custom_grant_123");
+
+    // Verify events were emitted
+    const events = spy.mock.calls.map((call) => call[0]);
+    expect(events).toContain("CONNECT_SUCCESS");
+    expect(events).toContain("SIGNED_IN");
+  });
+
+  it("disables PKCE when custom code exchange is provided", async () => {
+    const mockCustomExchange = vi.fn().mockResolvedValue({
+      accessToken: "access_token",
+      idToken: "id_token",
+      grantId: "grant_123",
+      expiresAt: Date.now() + 3600000,
+      scope: "email",
+    });
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    const url = await auth.connect({ method: "inline" });
+
+    // URL should not contain PKCE parameters when custom exchange is used
+    expect(url).not.toContain("code_challenge");
+    expect(url).not.toContain("code_challenge_method");
+    expect(url).toContain(`client_id=${encodeURIComponent(clientId)}`);
+    expect(url).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
+  });
+
+  it("includes PKCE when no custom code exchange is provided", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+    });
+
+    const url = await auth.connect({ method: "inline" });
+
+    // URL should contain PKCE parameters when using built-in exchange
+    expect(url).toContain("code_challenge=challengeABC");
+    expect(url).toContain("code_challenge_method=S256");
+  });
+
+  it("validates custom code exchange result", async () => {
+    const mockCustomExchange = vi.fn().mockResolvedValue({
+      // Missing required fields
+      idToken: "id_token",
+      expiresAt: Date.now() + 3600000,
+      scope: "email",
+    });
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    const spy = vi.fn();
+    auth.onConnectStateChange(spy);
+
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+
+    await expect(auth.handleRedirectCallback(callbackUrl)).rejects.toThrow(
+      "Custom code exchange failed",
+    );
+
+    // Verify error event was emitted
+    const events = spy.mock.calls.map((call) => call[0]);
+    expect(events).toContain("CONNECT_ERROR");
+  });
+
+  it("handles custom code exchange errors gracefully", async () => {
+    const mockCustomExchange = vi
+      .fn()
+      .mockRejectedValue(new Error("Backend exchange failed"));
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    const spy = vi.fn();
+    auth.onConnectStateChange(spy);
+
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+
+    await expect(auth.handleRedirectCallback(callbackUrl)).rejects.toThrow(
+      "Custom code exchange failed",
+    );
+
+    // Verify error event was emitted
+    const events = spy.mock.calls.map((call) => call[0]);
+    expect(events).toContain("CONNECT_ERROR");
+  });
+
+  it("passes correct parameters to custom code exchange with provider and scopes", async () => {
+    const mockCustomExchange = vi.fn().mockResolvedValue({
+      accessToken: "access_token",
+      idToken: "id_token",
+      grantId: "grant_123",
+      expiresAt: Date.now() + 3600000,
+      scope: "email calendar",
+      grantInfo: {
+        id: "user123",
+        email: "test@example.com",
+        name: "Test User",
+        provider: "google",
+      },
+    });
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+      defaultScopes: ["email", "calendar"],
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: ["email", "calendar"],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    // Mock successful token validation
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ data: { grant_id: "grant_123" } }),
+      }),
+    );
+
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+    await auth.handleRedirectCallback(callbackUrl);
+
+    expect(mockCustomExchange).toHaveBeenCalledWith({
+      code: "auth_code_123",
+      state: "stateXYZ",
+      codeVerifier: "verifier123",
+      scopes: ["email", "calendar"],
+      provider: undefined,
+      clientId,
+      redirectUri,
+    });
+  });
+
+  it("stores tokens from custom code exchange correctly", async () => {
+    const customResult = {
+      accessToken: "custom_access_token",
+      idToken: "custom_id_token",
+      grantId: "custom_grant_123",
+      expiresAt: Date.now() + 3600000,
+      scope: "email",
+      grantInfo: {
+        id: "user123",
+        email: "test@example.com",
+        name: "Test User",
+        provider: "google",
+      },
+    };
+
+    const mockCustomExchange = vi.fn().mockResolvedValue(customResult);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+    await auth.handleRedirectCallback(callbackUrl);
+
+    // Verify tokens were stored
+    const storedSession = await auth.getSession("custom_grant_123");
+    expect(storedSession).toEqual(customResult);
+
+    // Verify default session was also set
+    const defaultSession = await auth.getSession();
+    expect(defaultSession).toEqual(customResult);
+  });
+
+  it("logs custom code exchange usage", async () => {
+    const mockCustomExchange = vi.fn().mockResolvedValue({
+      accessToken: "access_token",
+      idToken: "id_token",
+      grantId: "grant_123",
+      expiresAt: Date.now() + 3600000,
+      scope: "email",
+    });
+
+    // Enable debug logging
+    logger.setLevel(LogLevel.DEBUG);
+    const logSpy = vi.spyOn(logger, "info");
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      codeExchange: mockCustomExchange,
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    // Check authentication start logging
+    await auth.connect({ method: "inline" });
+
+    expect(logSpy).toHaveBeenCalledWith(
+      "Starting authentication",
+      expect.objectContaining({
+        customCodeExchange: true,
+      }),
+    );
+
+    // Check custom exchange logging
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+    await auth.handleRedirectCallback(callbackUrl);
+
+    expect(logSpy).toHaveBeenCalledWith("Using custom code exchange method");
+    expect(logSpy).toHaveBeenCalledWith(
+      "Custom code exchange successful",
+      expect.objectContaining({
+        grantId: "grant_123",
+        scope: "email",
+      }),
+    );
+  });
+
+  it("falls back to built-in exchange when no custom method provided", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+    });
+
+    // Store auth state manually for the test
+    const authState = {
+      codeVerifier: "verifier123",
+      state: "stateXYZ",
+      scopes: [],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(
+      `@nylas/connect:nylas_auth_state_${clientId}`,
+      JSON.stringify(authState),
+    );
+
+    // Mock built-in token exchange
+    const mockTokenResponse = {
+      access_token: "builtin_access_token",
+      id_token: createValidIdToken(),
+      grant_id: "builtin_grant_123",
+      expires_in: 3600,
+      scope: "email",
+    };
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockTokenResponse,
+      }),
+    );
+
+    const callbackUrl = `${redirectUri}?code=auth_code_123&state=stateXYZ`;
+    const result = await auth.handleRedirectCallback(callbackUrl);
+
+    // Verify built-in exchange was used
+    expect(result.accessToken).toBe("builtin_access_token");
+    expect(result.grantId).toBe("builtin_grant_123");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/connect/token",
+      expect.objectContaining({
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      }),
+    );
+  });
+
+  function createValidIdToken(): string {
+    const header = { alg: "RS256", typ: "JWT" };
+    const payload = {
+      sub: "user123",
+      email: "test@example.com",
+      name: "Test User",
+      provider: "google",
+      email_verified: true,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 3600,
+    };
+
+    return [base64url(header), base64url(payload), "signature"].join(".");
+  }
+});

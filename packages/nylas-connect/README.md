@@ -119,6 +119,104 @@ try {
 | `apiUrl` | `string` | `https://api.us.nylas.com` | API base URL |
 | `persistTokens` | `boolean` | `true` | Store tokens in localStorage |
 | `debug` | `boolean` | `true` on localhost | Enable debug logging |
+| `codeExchange` | `function` | - | Custom code exchange method |
+
+## Custom Code Exchange
+
+For enhanced security, you can handle the OAuth code exchange on your backend instead of in the browser. This approach keeps your API keys secure and gives you full control over the token exchange process.
+
+### Backend Code Exchange
+
+```typescript
+const nylasConnect = new NylasConnect({
+  clientId: 'your-nylas-client-id',
+  redirectUri: 'http://localhost:3000/auth/callback',
+  codeExchange: async (params) => {
+    // Send the authorization code to your backend
+    const response = await fetch('/api/auth/exchange', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code: params.code,
+        state: params.state,
+        clientId: params.clientId,
+        redirectUri: params.redirectUri,
+        scopes: params.scopes,
+        provider: params.provider,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Token exchange failed: ${response.statusText}`);
+    }
+
+    const tokenData = await response.json();
+    
+    // Return the expected ConnectResult format
+    return {
+      accessToken: tokenData.access_token,
+      idToken: tokenData.id_token,
+      grantId: tokenData.grant_id,
+      expiresAt: Date.now() + tokenData.expires_in * 1000,
+      scope: tokenData.scope,
+      grantInfo: tokenData.grant_info,
+    };
+  }
+});
+
+// Use normally - the custom exchange will be called automatically
+const result = await nylasConnect.connect({ method: 'popup' });
+```
+
+### Backend Implementation Example
+
+```typescript
+// Example backend endpoint (/api/auth/exchange)
+export async function POST(request: Request) {
+  const { code, clientId, redirectUri } = await request.json();
+  
+  // Exchange code for tokens using your API key
+  const response = await fetch('https://api.us.nylas.com/connect/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${process.env.NYLAS_API_KEY}`,
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      code,
+      grant_type: 'authorization_code',
+    }),
+  });
+
+  const tokenData = await response.json();
+  return Response.json(tokenData);
+}
+```
+
+### Key Benefits
+
+- **🔐 Enhanced Security**: API keys never exposed to the browser
+- **🎛️ Full Control**: Handle token validation, user creation, etc.
+- **📊 Audit Trail**: Log all authentication events on your backend
+- **🔄 Automatic PKCE**: When using custom exchange, PKCE is automatically disabled (not needed for confidential clients)
+
+### CodeExchangeParams
+
+The `codeExchange` function receives these parameters:
+
+```typescript
+interface CodeExchangeParams {
+  code: string;        // Authorization code from OAuth callback
+  state: string;       // State parameter for CSRF protection
+  codeVerifier?: string; // PKCE code verifier (optional)
+  scopes: string[];    // Requested scopes
+  provider?: string;   // OAuth provider (google, microsoft, etc.)
+  clientId: string;    // Your Nylas Client ID
+  redirectUri: string; // OAuth redirect URI
+}
+```
 
 ## API
 

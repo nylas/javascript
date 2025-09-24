@@ -14,6 +14,7 @@ import type {
   SessionData,
   LogLevel,
   Provider,
+  CodeExchangeParams,
 } from "./types";
 import { ConnectStatus } from "./types";
 import { generatePKCE, generateState } from "./crypto/pkce";
@@ -40,8 +41,8 @@ import {
  * Modern Nylas authentication client
  */
 export class NylasConnect {
-  private config: Required<Omit<ConnectConfig, "logLevel">> &
-    Pick<ConnectConfig, "logLevel">;
+  private config: Required<Omit<ConnectConfig, "logLevel" | "codeExchange">> &
+    Pick<ConnectConfig, "logLevel" | "codeExchange">;
   private storage: TokenStorage;
   private connectStateCallbacks: Set<ConnectStateChangeCallback> = new Set();
 
@@ -74,6 +75,7 @@ export class NylasConnect {
       persistTokens: resolvedConfig.persistTokens!,
       autoHandleCallback: resolvedConfig.autoHandleCallback!,
       logLevel: resolvedConfig.logLevel,
+      codeExchange: resolvedConfig.codeExchange,
     };
 
     // Configure logger based on config
@@ -110,6 +112,7 @@ export class NylasConnect {
       persistTokens: config.persistTokens ?? true,
       autoHandleCallback: config.autoHandleCallback ?? true,
       logLevel: config.logLevel,
+      codeExchange: config.codeExchange,
     };
   }
 
@@ -286,6 +289,7 @@ export class NylasConnect {
       method: options.method,
       scopes,
       provider: options.provider,
+      customCodeExchange: !!this.config.codeExchange,
     });
 
     // Store auth state for later retrieval using global key
@@ -309,7 +313,8 @@ export class NylasConnect {
       clientId: this.config.clientId,
       redirectUri: this.config.redirectUri,
       scopes,
-      codeChallenge,
+      // Only include PKCE when using built-in token exchange
+      codeChallenge: this.config.codeExchange ? undefined : codeChallenge,
       state,
       provider: options.provider,
       loginHint: options.loginHint,
@@ -338,7 +343,13 @@ export class NylasConnect {
           reason: "completed",
         });
 
-        const result = await this.exchangeCodeForTokens(authCode, codeVerifier);
+        const result = await this.performCodeExchange(
+          authCode,
+          codeVerifier,
+          scopes,
+          options.provider,
+          state,
+        );
 
         // Emit CONNECT_SUCCESS before SIGNED_IN
         this.triggerConnectStateChange("CONNECT_SUCCESS", result, {
@@ -500,9 +511,12 @@ export class NylasConnect {
     }
 
     // Exchange code for tokens BEFORE cleaning URL
-    const result = await this.exchangeCodeForTokens(
+    const result = await this.performCodeExchange(
       code,
       storedState.codeVerifier,
+      storedState.scopes,
+      undefined, // Provider info not available in stored state
+      state,
     );
 
     // Emit CONNECT_SUCCESS event
@@ -863,6 +877,83 @@ export class NylasConnect {
 
     // Simple array format or undefined
     return this.config.defaultScopes || [];
+  }
+
+  /**
+   * Perform code exchange using custom method or built-in method
+   */
+  private async performCodeExchange(
+    code: string,
+    codeVerifier: string,
+    scopes: string[],
+    provider?: Provider,
+    state?: string,
+  ): Promise<ConnectResult> {
+    if (this.config.codeExchange) {
+      // Use custom code exchange method
+      logger.info("Using custom code exchange method");
+
+      const params: CodeExchangeParams = {
+        code,
+        state: state || "",
+        codeVerifier,
+        scopes,
+        provider,
+        clientId: this.config.clientId,
+        redirectUri: this.config.redirectUri,
+      };
+
+      try {
+        const result = await this.config.codeExchange(params);
+
+        // Validate the result from custom exchange
+        if (!result.accessToken || !result.grantId) {
+          throw new TokenError(
+            "Invalid result from custom code exchange",
+            "Custom code exchange method must return accessToken and grantId",
+          );
+        }
+
+        // Store tokens
+        const key = this.tokenKey(result.grantId);
+        await this.storage.set(key, JSON.stringify(result));
+
+        // Also store as default if no other default exists
+        const defaultToken = await this.storage.get(this.tokenKey());
+        if (!defaultToken) {
+          await this.storage.set(this.tokenKey(), JSON.stringify(result));
+        }
+
+        logger.info("Custom code exchange successful", {
+          grantId: result.grantId,
+          scope: result.scope,
+        });
+
+        return result;
+      } catch (error) {
+        logger.error("Custom code exchange failed", error);
+
+        const tokenError =
+          error instanceof Error
+            ? new TokenError(
+                "Custom code exchange failed",
+                error.message,
+                error,
+              )
+            : new TokenError("Custom code exchange failed", "Unknown error");
+
+        // Emit CONNECT_ERROR event for custom exchange failures
+        this.triggerConnectStateChange("CONNECT_ERROR", null, {
+          error: tokenError,
+          step: "custom_code_exchange",
+        });
+
+        throw tokenError;
+      }
+    } else {
+      // Use built-in token exchange
+      return await this.exchangeCodeForTokens(code, codeVerifier);
+    }
   }
 
   /**
