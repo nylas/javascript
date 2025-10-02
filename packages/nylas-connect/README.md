@@ -284,6 +284,58 @@ Match your Nylas account region:
 
 Automatic. @nylas/connect handles token refresh in the background.
 
+
+# External Identity Provider Integration Example
+
+This example demonstrates how to use the new `identityProviderToken` callback feature to integrate external identity providers (via JWKS) with Nylas Connect.
+
+## Basic Usage
+
+```typescript
+import { NylasConnect } from '@nylas/connect';
+
+// Example: Using a function that returns a JWT token
+const connect = new NylasConnect({
+  clientId: 'your-client-id',
+  redirectUri: 'http://localhost:3000/auth/callback',
+  
+  // New feature: Identity provider token callback
+  identityProviderToken: async () => {
+    // Your logic to get the JWT token from your external identity provider
+    // This could be from your own auth system, a third-party service, etc.
+    const token = await getJWTFromYourIdentityProvider();
+    return token; // Return the JWT string, or null if not available
+  }
+});
+
+// The rest works the same as before
+const result = await connect.connect({ method: 'popup' });
+```
+
+
+## How It Works
+
+1. When you call `connect.connect()`, the authentication flow proceeds normally
+2. During the token exchange step (when exchanging the authorization code for access tokens), the `identityProviderToken` callback is called
+3. If the callback returns a JWT token, it's sent to Nylas as the `idp_claims` parameter
+4. If the callback returns `null` or throws an error:
+   - Returning `null`: The auth flow continues without IDP claims
+   - Throwing an error: The entire token exchange fails with a `NETWORK_ERROR` event
+
+## Error Handling
+
+If the `identityProviderToken` callback throws an error, the entire authentication flow will fail with a `NETWORK_ERROR` event. You can listen for this event to handle IDP-related errors:
+
+```typescript
+connect.onConnectStateChange((event, session, data) => {
+  if (event === 'NETWORK_ERROR' && data?.operation === 'identity_provider_token_callback') {
+    // Handle IDP token callback error
+    console.error('IDP token error:', data.error);
+  }
+});
+```
+
+
 ## License
 
 MIT © [Nylas](https://nylas.com)

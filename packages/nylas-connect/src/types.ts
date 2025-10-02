@@ -99,6 +99,11 @@ export type CodeExchangeMethod = (
   params: CodeExchangeParams,
 ) => Promise<ConnectResult>;
 
+export type IdentityProviderTokenCallback = () =>
+  | Promise<string | null>
+  | string
+  | null;
+
 /**
  * Core configuration for NylasConnect
  */
@@ -123,6 +128,8 @@ export interface ConnectConfig {
   logLevel?: LogLevel | "off";
   /** Custom code exchange method - if provided, will be used instead of built-in token exchange */
   codeExchange?: CodeExchangeMethod;
+  /** Optional callback to provide external identity provider JWT token for idp_claims */
+  identityProviderToken?: IdentityProviderTokenCallback;
 }
 
 /**
