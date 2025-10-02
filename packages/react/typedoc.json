@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "nylas-react",
+  "tsconfig": "./tsconfig.typedoc.json",
+  "plugin": ["typedoc-plugin-markdown"],
+  "entryPoints": ["./lib/notetaker/**/*.{ts,tsx}"],
+  "flattenOutputFiles": true,
+  "excludeScopesInPaths": true,
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "hidePageTitle": true,
+  "disableSources": true,
+  "entryFileName": "DOCS.md",
+  "interfacePropertiesFormat": "table",
+  "tableColumnSettings": {
+    "hideSources": true
+  },
+  "headings": false,
+  "formatWithPrettier": true,
+  "excludeNotDocumented": true,
+  "maxTypeConversionDepth": 2,
+  "expandParameters": true
+}

@@ -1,0 +1,109 @@
+{
+  "name": "@nylas/react",
+  "version": "2.2.4",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "format": "prettier --write lib/",
+    "format:check": "prettier --check lib/",
+    "lint": "eslint lib/",
+    "lint:check": "eslint lib/ --max-warnings 0",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "dev:server": "vite",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "docs": "typedoc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nylas/nylas.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts",
+      "style": "./dist/style.css"
+    },
+    "./connect": {
+      "import": "./dist/es/connect.js",
+      "require": "./dist/cjs/connect.js",
+      "types": "./dist/connect.d.ts"
+    },
+    "./elements": {
+      "import": "./dist/es/elements.js",
+      "require": "./dist/cjs/elements.js",
+      "types": "./dist/elements.d.ts"
+    },
+    "./notetaker": {
+      "import": "./dist/es/notetaker.js",
+      "require": "./dist/cjs/notetaker.js",
+      "types": "./dist/notetaker.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/es/utils.js",
+      "require": "./dist/cjs/utils.js",
+      "types": "./dist/utils.d.ts"
+    },
+    "./style.css": {
+      "default": "./dist/style.css"
+    }
+  },
+  "main": "dist/cjs/index.js",
+  "style": "./dist/style.css",
+  "module": "dist/es/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@nylas/connect": "workspace:^",
+    "@nylas/core": "^1.2.0",
+    "@nylas/web-elements": "^2.2.4",
+    "@stencil/react-output-target": "^1.2.0",
+    "axios": "^1.7.7",
+    "dayjs": "1.11.7",
+    "lucide-react": "^0.453.0",
+    "tailwind-variants": "^1.0.0",
+    "zustand": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.3",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@types/testing-library__jest-dom": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom": "^26.0.0",
+    "markdown-table": "^3.0.4",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.7",
+    "tslib": "^2.6.2",
+    "typedoc": "^0.28.3",
+    "typedoc-plugin-markdown": "^4.6.3",
+    "typescript": "^5.3.3",
+    "vite": "^4.5.2",
+    "vite-plugin-dts": "^3.6.3",
+    "vitest": "^3.2.4"
+  }
+}
