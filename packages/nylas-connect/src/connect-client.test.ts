@@ -1167,7 +1167,7 @@ describe("NylasConnect (custom code exchange)", () => {
       "https://api.us.nylas.com/v3/connect/token",
       expect.objectContaining({
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { "Content-Type": "application/json" },
       }),
     );
   });
@@ -1186,6 +1186,411 @@ describe("NylasConnect (custom code exchange)", () => {
 
     return [base64url(header), base64url(payload), "signature"].join(".");
   }
+});
+
+describe("NylasConnect (Identity Provider Token)", () => {
+  const clientId = "client_123";
+  const redirectUri = "https://app.example/callback";
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
+
+  it("should include idp_claims in token exchange when identityProviderToken callback returns a token", async () => {
+    const mockIdpToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+    const mockIdentityProviderToken = vi.fn().mockResolvedValue(mockIdpToken);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({
+      sub: "user_1",
+      email: "alice@example.com",
+      name: "Alice",
+      provider: "google",
+      email_verified: true,
+    });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "access_abc",
+        id_token: idToken,
+        token_type: "Bearer",
+        expires_in: 3600,
+        scope: "email profile",
+        grant_id: "grant_1",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const result = await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    // Verify the callback was called
+    expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
+
+    // Verify the fetch was called with JSON content type and idp_claims
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/v3/connect/token",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          code: "auth_code_1",
+          grant_type: "authorization_code",
+          code_verifier: "verifier123",
+          idp_claims: mockIdpToken,
+        }),
+      }),
+    );
+
+    // Verify the result is still correct
+    expect(result.accessToken).toBe("access_abc");
+    expect(result.grantId).toBe("grant_1");
+  });
+
+  it("should not include idp_claims when identityProviderToken callback returns null", async () => {
+    const mockIdentityProviderToken = vi.fn().mockResolvedValue(null);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({
+      sub: "user_1",
+      email: "alice@example.com",
+      name: "Alice",
+      provider: "google",
+      email_verified: true,
+    });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "access_abc",
+        id_token: idToken,
+        token_type: "Bearer",
+        expires_in: 3600,
+        scope: "email profile",
+        grant_id: "grant_1",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const result = await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    // Verify the fetch was called with JSON format but no idp_claims
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/v3/connect/token",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          code: "auth_code_1",
+          grant_type: "authorization_code",
+          code_verifier: "verifier123",
+          // No idp_claims field
+        }),
+      }),
+    );
+
+    // Verify the result is correct
+    expect(result.accessToken).toBe("access_abc");
+    expect(result.grantId).toBe("grant_1");
+  });
+
+  it("should handle empty string return from identityProviderToken callback", async () => {
+    const mockIdentityProviderToken = vi.fn().mockResolvedValue("");
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({
+      sub: "user_1",
+      email: "alice@example.com",
+      name: "Alice",
+      provider: "google",
+      email_verified: true,
+    });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "access_abc",
+        id_token: idToken,
+        token_type: "Bearer",
+        expires_in: 3600,
+        scope: "email profile",
+        grant_id: "grant_1",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    // Verify the callback was called
+    expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
+
+    // Verify the fetch was called without idp_claims (empty string is falsy)
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/v3/connect/token",
+      expect.objectContaining({
+        body: JSON.stringify({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          code: "auth_code_1",
+          grant_type: "authorization_code",
+          code_verifier: "verifier123",
+          // No idp_claims field should be present for empty string
+        }),
+      }),
+    );
+  });
+
+  it("should work without identityProviderToken callback (backward compatibility)", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      // No identityProviderToken callback
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({
+      sub: "user_1",
+      email: "alice@example.com",
+      name: "Alice",
+      provider: "google",
+      email_verified: true,
+    });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "access_abc",
+        id_token: idToken,
+        token_type: "Bearer",
+        expires_in: 3600,
+        scope: "email profile",
+        grant_id: "grant_1",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const result = await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    // Verify the fetch was called with JSON format but no idp_claims
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/v3/connect/token",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          code: "auth_code_1",
+          grant_type: "authorization_code",
+          code_verifier: "verifier123",
+          // No idp_claims field
+        }),
+      }),
+    );
+
+    // Verify the result is correct
+    expect(result.accessToken).toBe("access_abc");
+    expect(result.grantId).toBe("grant_1");
+  });
+
+  it("should work with synchronous identityProviderToken callback", async () => {
+    const mockIdpToken = "sync.jwt.token";
+    const mockIdentityProviderToken = vi.fn().mockReturnValue(mockIdpToken);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({
+      sub: "user_1",
+      email: "alice@example.com",
+      name: "Alice",
+      provider: "google",
+      email_verified: true,
+    });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "access_abc",
+        id_token: idToken,
+        token_type: "Bearer",
+        expires_in: 3600,
+        scope: "email profile",
+        grant_id: "grant_1",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    // Verify the callback was called
+    expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
+
+    // Verify the fetch was called with the sync token
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.us.nylas.com/v3/connect/token",
+      expect.objectContaining({
+        body: JSON.stringify({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          code: "auth_code_1",
+          grant_type: "authorization_code",
+          code_verifier: "verifier123",
+          idp_claims: mockIdpToken,
+        }),
+      }),
+    );
+  });
+
+  it("should fail token exchange when identityProviderToken callback throws an error", async () => {
+    const mockError = new Error("IDP service unavailable");
+    const mockIdentityProviderToken = vi.fn().mockRejectedValue(mockError);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Mock token endpoint (should not be called)
+    const mockFetch = vi.fn();
+    vi.stubGlobal("fetch", mockFetch);
+
+    // Verify the callback error is thrown
+    await expect(
+      auth.handleRedirectCallback(
+        `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+      ),
+    ).rejects.toThrow("Identity provider token callback failed");
+
+    // Verify the callback was called
+    expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
+
+    // Verify the token endpoint was never called due to callback failure
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it("should emit NETWORK_ERROR event when identityProviderToken callback fails", async () => {
+    const mockError = new Error("IDP service unavailable");
+    const mockIdentityProviderToken = vi.fn().mockRejectedValue(mockError);
+
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+      identityProviderToken: mockIdentityProviderToken,
+    });
+
+    // Prime storage by calling connect() first
+    await auth.connect();
+
+    // Set up event listener
+    const mockEventCallback = vi.fn();
+    auth.onConnectStateChange(mockEventCallback);
+
+    // Mock token endpoint (should not be called)
+    const mockFetch = vi.fn();
+    vi.stubGlobal("fetch", mockFetch);
+
+    // Attempt the callback
+    await expect(
+      auth.handleRedirectCallback(
+        `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+      ),
+    ).rejects.toThrow("Identity provider token callback failed");
+
+    // Verify NETWORK_ERROR event was emitted for IDP callback failure
+    expect(mockEventCallback).toHaveBeenCalledWith(
+      "NETWORK_ERROR",
+      null,
+      expect.objectContaining({
+        operation: "identity_provider_token_callback",
+        error: expect.objectContaining({
+          message: "Identity provider token callback failed",
+          description: "Failed to retrieve external identity provider token",
+        }),
+      }),
+    );
+  });
 });
 
 describe("NylasConnect (API URL normalization)", () => {
