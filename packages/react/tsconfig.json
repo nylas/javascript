@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "declaration": true,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["ES6", "DOM"],
+    "outDir": "./dist",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "types": ["vitest/globals"],
+    "declarationDir": "./dist/types",
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["lib", "index.ts", "test/vitest.d.ts", "test/vitest.setup.ts"],
+  "exclude": ["node_modules"]
+}
