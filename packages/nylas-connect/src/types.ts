@@ -72,6 +72,15 @@ export type ProviderScopes = {
 export type Environment = "development" | "staging" | "production";
 
 /**
+ * Identity provider token callback for external IDP integration
+ * Returns a JWT token to be sent as idp_claims during token exchange
+ */
+export type IdentityProviderTokenCallback = () =>
+  | Promise<string | null>
+  | string
+  | null;
+
+/**
  * Core configuration for NylasConnect
  */
 export interface ConnectConfig {
@@ -93,6 +102,8 @@ export interface ConnectConfig {
   autoHandleCallback?: boolean;
   /** Set specific log level for the logger (overrides debug flag) */
   logLevel?: LogLevel | "off";
+  /** Optional callback to provide external identity provider JWT token for idp_claims */
+  identityProviderToken?: IdentityProviderTokenCallback;
 }
 
 /**
