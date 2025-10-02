@@ -92,10 +92,26 @@ export class NylasConnect {
   }
 
   /**
+   * Normalize API URL to ensure it has a version suffix
+   */
+  private normalizeApiUrl(apiUrl: string): string {
+    // Remove trailing slashes
+    const cleanUrl = apiUrl.replace(/\/+$/, "");
+    // Check if URL already has a version suffix (e.g., /v3, /v2, etc.)
+    const versionPattern = /\/v\d+$/;
+    if (versionPattern.test(cleanUrl)) {
+      return cleanUrl;
+    }
+    // Append /v3 if no version suffix is present
+    return `${cleanUrl}/v3`;
+  }
+
+  /**
    * Resolve configuration with environment variables and smart defaults
    */
   private resolveConfig(config: ConnectConfig): ConnectConfig {
     const environment = this.detectEnvironment(config.environment);
+    const baseApiUrl = config.apiUrl || "https://api.us.nylas.com";
 
     return {
       clientId: config.clientId || this.getEnvVar("NYLAS_CLIENT_ID"),
@@ -103,7 +119,7 @@ export class NylasConnect {
         config.redirectUri ||
         this.getEnvVar("NYLAS_REDIRECT_URI") ||
         this.detectRedirectUri(),
-      apiUrl: config.apiUrl || "https://api.us.nylas.com",
+      apiUrl: this.normalizeApiUrl(baseApiUrl),
       environment,
       defaultScopes: config.defaultScopes,
       debug: config.debug ?? environment === "development",
