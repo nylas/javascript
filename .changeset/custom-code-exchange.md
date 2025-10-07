@@ -2,15 +2,7 @@
 "@nylas/connect": minor
 ---
 
-Add custom code exchange functionality for enhanced security
-
-This release adds support for custom OAuth code exchange methods, allowing developers to handle token exchange on their backend for enhanced security. Key features include:
-
-- **Custom Code Exchange**: Inject a custom function to handle authorization code exchange on your backend
-- **Automatic PKCE Management**: PKCE is automatically disabled when using custom exchange (not needed for confidential clients)
-- **Type Safety**: Full TypeScript support with well-defined interfaces for custom exchange parameters
-- **Backward Compatibility**: No breaking changes - existing flows continue to work unchanged
-- **Enhanced Security**: Keep API keys secure on the backend while using convenient popup authentication
+Add custom code exchange functionality for enhanced security.
 
 ### Usage
 

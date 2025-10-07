@@ -119,7 +119,7 @@ try {
 | `apiUrl` | `string` | `https://api.us.nylas.com` | API base URL |
 | `persistTokens` | `boolean` | `true` | Store tokens in localStorage |
 | `debug` | `boolean` | `true` on localhost | Enable debug logging |
-| `codeExchange` | `function` | - | Custom code exchange method |
+| `codeExchange` | (param: CodeExchangeParams) => Promise<ConnectResult>` | - | Custom code exchange method |
 
 ## Custom Code Exchange
 
@@ -194,13 +194,6 @@ export async function POST(request: Request) {
   return Response.json(tokenData);
 }
 ```
-
-### Key Benefits
-
-- **🔐 Enhanced Security**: API keys never exposed to the browser
-- **🎛️ Full Control**: Handle token validation, user creation, etc.
-- **📊 Audit Trail**: Log all authentication events on your backend
-- **🔄 Automatic PKCE**: When using custom exchange, PKCE is automatically disabled (not needed for confidential clients)
 
 ### CodeExchangeParams
 
