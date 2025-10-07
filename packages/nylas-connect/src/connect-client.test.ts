@@ -1164,7 +1164,7 @@ describe("NylasConnect (custom code exchange)", () => {
     expect(result.accessToken).toBe("builtin_access_token");
     expect(result.grantId).toBe("builtin_grant_123");
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/connect/token",
+      "https://api.us.nylas.com/v3/connect/token",
       expect.objectContaining({
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -1186,4 +1186,130 @@ describe("NylasConnect (custom code exchange)", () => {
 
     return [base64url(header), base64url(payload), "signature"].join(".");
   }
+});
+
+describe("NylasConnect (API URL normalization)", () => {
+  const clientId = "client_123";
+  const redirectUri = "https://app.example/callback";
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
+
+  it("should append /v3 to default API URL when no version is present", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v3/connect/auth");
+  });
+
+  it("should append /v3 to custom API URL when no version is present", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://custom.api.com",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://custom.api.com/v3/connect/auth");
+  });
+
+  it("should preserve existing version suffix (v2)", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com/v2",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v2/connect/auth");
+    expect(url).not.toContain("/v3");
+  });
+
+  it("should preserve existing version suffix (v1)", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com/v1",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v1/connect/auth");
+    expect(url).not.toContain("/v3");
+  });
+
+  it("should handle trailing slashes correctly", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com/",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v3/connect/auth");
+    expect(url).not.toContain("//v3"); // Should not have double slashes
+  });
+
+  it("should handle multiple trailing slashes correctly", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com///",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v3/connect/auth");
+    expect(url).not.toContain("//v3"); // Should not have double slashes
+  });
+
+  it("should preserve version with trailing slashes", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com/v2/",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v2/connect/auth");
+    expect(url).not.toContain("/v3");
+  });
+
+  it("should append /v3 to default URL when no apiUrl is provided", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      // No apiUrl provided - should use default
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v3/connect/auth");
+  });
+
+  it("should handle EU API URL correctly", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.eu.nylas.com",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.eu.nylas.com/v3/connect/auth");
+  });
+
+  it("should work with higher version numbers", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com/v10",
+    });
+
+    const { url } = await auth.getAuthUrl();
+    expect(url).toContain("https://api.us.nylas.com/v10/connect/auth");
+    expect(url).not.toContain("/v3");
+  });
 });
