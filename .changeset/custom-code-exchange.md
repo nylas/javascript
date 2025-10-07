@@ -1,5 +1,5 @@
 ---
-"@nylas/connect": minor
+"@nylas/connect": major
 ---
 
 Add custom code exchange functionality for enhanced security.
