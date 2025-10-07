@@ -7,11 +7,11 @@ Add custom code exchange functionality for enhanced security.
 ### Usage
 
 ```typescript
+// Handle code exchange on your backend
 const nylasConnect = new NylasConnect({
   clientId: 'your-client-id',
   redirectUri: 'http://localhost:3000/callback',
   codeExchange: async (params) => {
-    // Handle code exchange on your backend
     const response = await fetch('/api/auth/exchange', {
       method: 'POST',
       body: JSON.stringify(params),
