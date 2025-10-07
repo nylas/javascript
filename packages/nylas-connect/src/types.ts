@@ -72,6 +72,34 @@ export type ProviderScopes = {
 export type Environment = "development" | "staging" | "production";
 
 /**
+ * Parameters passed to custom code exchange method
+ */
+export interface CodeExchangeParams {
+  /** Authorization code from OAuth callback */
+  code: string;
+  /** State parameter from OAuth callback */
+  state: string;
+  /** PKCE code verifier (if PKCE was used) */
+  codeVerifier?: string;
+  /** Scopes that were requested */
+  scopes: string[];
+  /** Provider used for authentication */
+  provider?: Provider;
+  /** Client ID */
+  clientId: string;
+  /** Redirect URI */
+  redirectUri: string;
+}
+
+/**
+ * Custom code exchange method signature
+ * Should return a ConnectResult with tokens and grant info
+ */
+export type CodeExchangeMethod = (
+  params: CodeExchangeParams,
+) => Promise<ConnectResult>;
+
+/**
  * Core configuration for NylasConnect
  */
 export interface ConnectConfig {
@@ -93,6 +121,8 @@ export interface ConnectConfig {
   autoHandleCallback?: boolean;
   /** Set specific log level for the logger (overrides debug flag) */
   logLevel?: LogLevel | "off";
+  /** Custom code exchange method - if provided, will be used instead of built-in token exchange */
+  codeExchange?: CodeExchangeMethod;
 }
 
 /**
