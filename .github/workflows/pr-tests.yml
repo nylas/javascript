@@ -16,7 +16,7 @@ concurrency:
 jobs:
   test:
     name: Test Suite
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: blacksmith-2vcpu-ubuntu-2204
     timeout-minutes: 15
 
     steps:
