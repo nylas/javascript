@@ -195,22 +195,6 @@ export async function POST(request: Request) {
 }
 ```
 
-### CodeExchangeParams
-
-The `codeExchange` function receives these parameters:
-
-```typescript
-interface CodeExchangeParams {
-  code: string;        // Authorization code from OAuth callback
-  state: string;       // State parameter for CSRF protection
-  codeVerifier?: string; // PKCE code verifier (optional)
-  scopes: string[];    // Requested scopes
-  provider?: string;   // OAuth provider (google, microsoft, etc.)
-  clientId: string;    // Your Nylas Client ID
-  redirectUri: string; // OAuth redirect URI
-}
-```
-
 ## API
 
 ### `connect(options?)`
