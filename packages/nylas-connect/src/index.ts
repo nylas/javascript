@@ -20,6 +20,7 @@ export type {
   ConnectEventData,
   ConnectStateChangeCallback,
   SessionData,
+  IdentityProviderTokenCallback,
   // OAuth scope types
   GoogleScope,
   MicrosoftScope,

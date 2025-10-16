@@ -41,8 +41,7 @@ import {
  * Modern Nylas authentication client
  */
 export class NylasConnect {
-  private config: Required<Omit<ConnectConfig, "logLevel" | "codeExchange">> &
-    Pick<ConnectConfig, "logLevel" | "codeExchange">;
+  private config: ConnectConfig;
   private storage: TokenStorage;
   private connectStateCallbacks: Set<ConnectStateChangeCallback> = new Set();
 
@@ -76,6 +75,7 @@ export class NylasConnect {
       autoHandleCallback: resolvedConfig.autoHandleCallback!,
       logLevel: resolvedConfig.logLevel,
       codeExchange: resolvedConfig.codeExchange,
+      identityProviderToken: resolvedConfig.identityProviderToken,
     };
 
     // Configure logger based on config
@@ -129,6 +129,7 @@ export class NylasConnect {
       autoHandleCallback: config.autoHandleCallback ?? true,
       logLevel: config.logLevel,
       codeExchange: config.codeExchange,
+      identityProviderToken: config.identityProviderToken,
     };
   }
 
@@ -718,13 +719,9 @@ export class NylasConnect {
     }
 
     try {
-      const response = await fetch(`${this.config.apiUrl}/connect/tokeninfo`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `access_token=${encodeURIComponent(accessToken)}`,
-      });
+      const response = await fetch(
+        `${this.config.apiUrl}/connect/tokeninfo?access_token=${encodeURIComponent(accessToken)}`,
+      );
 
       const data = await response.json();
       const isValid = !!(response.ok && data?.data);
@@ -985,7 +982,7 @@ export class NylasConnect {
       codeVerifier,
     );
 
-    const payload = {
+    const payload: Record<string, any> = {
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       code,
@@ -993,13 +990,44 @@ export class NylasConnect {
       code_verifier: codeVerifier,
     };
 
+    // Get identity provider token if callback is configured
+    if (this.config.identityProviderToken) {
+      try {
+        logger.debug("Calling identity provider token callback");
+        const idpToken = await this.config.identityProviderToken();
+
+        if (idpToken) {
+          payload.idp_claims = idpToken;
+          logger.debug("Added idp_claims to token exchange payload");
+        } else {
+          logger.debug("Identity provider token callback returned null/empty");
+        }
+      } catch (error) {
+        logger.error("Identity provider token callback failed", error);
+
+        const idpError = new NetworkError(
+          "Identity provider token callback failed",
+          "Failed to retrieve external identity provider token",
+          error as Error,
+        );
+
+        // Emit NETWORK_ERROR event for IDP callback failures
+        this.triggerConnectStateChange("NETWORK_ERROR", null, {
+          operation: "identity_provider_token_callback",
+          error: idpError,
+        });
+
+        throw idpError;
+      }
+    }
+
     try {
       const response = await fetch(`${this.config.apiUrl}/connect/token`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams(payload).toString(),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
