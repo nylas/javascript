@@ -719,13 +719,9 @@ export class NylasConnect {
     }
 
     try {
-      const response = await fetch(`${this.config.apiUrl}/connect/tokeninfo`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `access_token=${encodeURIComponent(accessToken)}`,
-      });
+      const response = await fetch(
+        `${this.config.apiUrl}/connect/tokeninfo?access_token=${encodeURIComponent(accessToken)}`,
+      );
 
       const data = await response.json();
       const isValid = !!(response.ok && data?.data);
