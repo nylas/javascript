@@ -1,5 +1,14 @@
 # @nylas/connect
 
+## 1.1.0
+
+### Minor Changes
+
+- 75d6769: - Added `IdentityProviderTokenCallback` type for providing JWT tokens
+  - Added optional `identityProviderToken` callback to `ConnectConfig`
+  - Token exchange now uses JSON format instead of form-encoded requests
+  - Added `idp_claims` field to token exchange when IDP token is provided
+
 ## 1.0.0
 
 ### Major Changes
