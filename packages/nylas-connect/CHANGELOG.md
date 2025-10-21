@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 1.2.0
+
+### Minor Changes
+
+- bf03a1e: Export CodeExchangeMethod and CodeExchangeParams types for custom code exchange implementations.
+
 ## 1.1.0
 
 ### Minor Changes
