@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import pkg from "../package.json";
 import { NylasConnect } from "./connect-client";
 import { logger } from "./utils/logger";
 import { LogLevel } from "./types";
@@ -106,6 +107,40 @@ describe("NylasConnect (fundamentals)", () => {
     // Tokens should be stored under token_grant
     expect(localStorage.getItem("@nylas/connect:token_grant_1")).toBeTruthy();
     expect(localStorage.getItem("@nylas/connect:token_default")).toBeTruthy();
+  });
+
+  it("sends x-nylas-connect header on token exchange", async () => {
+    const auth = new NylasConnect({
+      clientId,
+      redirectUri,
+      apiUrl: "https://api.us.nylas.com",
+    });
+
+    await auth.connect();
+
+    // Minimal successful token response
+    const header = base64url({ alg: "none", typ: "JWT" });
+    const payload = base64url({ sub: "u" });
+    const idToken = `${header}.${payload}.sig`;
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        access_token: "a",
+        id_token: idToken,
+        grant_id: "g",
+        expires_in: 3600,
+        scope: "s",
+      }),
+    });
+    vi.stubGlobal("fetch", mockFetch);
+
+    await auth.handleRedirectCallback(
+      `${redirectUri}?code=auth_code_1&state=stateXYZ`,
+    );
+
+    const lastCall = mockFetch.mock.calls.at(-1);
+    expect(lastCall[1].headers["x-nylas-connect"]).toBe(pkg.version);
   });
 
   it("logout(grantId) removes the specific session and emits SIGNED_OUT", async () => {
@@ -718,6 +753,9 @@ describe("NylasConnect (sessions, validation, and events)", () => {
 
       const status = await auth.getConnectionStatus();
       expect(status).toBe("connected");
+      const lastCall = (fetch as any).mock.calls.at(-1);
+      expect(lastCall[1]).toBeDefined();
+      expect(lastCall[1].headers["x-nylas-connect"]).toBe(pkg.version);
       const emitted = spy.mock.calls.map((c) => c[0]);
       expect(emitted).not.toContain("CONNECTION_STATUS_CHANGED");
     });
@@ -754,6 +792,8 @@ describe("NylasConnect (sessions, validation, and events)", () => {
 
       const status = await auth.getConnectionStatus();
       expect(status).toBe("invalid");
+      const lastCall = (fetch as any).mock.calls.at(-1);
+      expect(lastCall[1].headers["x-nylas-connect"]).toBe(pkg.version);
       const emitted = spy.mock.calls.map((c) => c[0]);
       expect(emitted).not.toContain("CONNECTION_STATUS_CHANGED");
     });
@@ -834,6 +874,10 @@ describe("NylasConnect (custom code exchange)", () => {
     // Verify result
     expect(result.accessToken).toBe("custom_access_token");
     expect(result.grantId).toBe("custom_grant_123");
+
+    // Verify header present on token validation call
+    const lastCallCustom = (fetch as any).mock.calls.at(-1);
+    expect(lastCallCustom[1].headers["x-nylas-connect"]).toBe(pkg.version);
 
     // Verify events were emitted
     const events = spy.mock.calls.map((call) => call[0]);
@@ -1163,13 +1207,11 @@ describe("NylasConnect (custom code exchange)", () => {
     // Verify built-in exchange was used
     expect(result.accessToken).toBe("builtin_access_token");
     expect(result.grantId).toBe("builtin_grant_123");
-    expect(fetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
+    const lastCall = (fetch as any).mock.calls.at(-1);
+    expect(lastCall[0]).toBe("https://api.us.nylas.com/v3/connect/token");
+    expect(lastCall[1].method).toBe("POST");
+    expect(lastCall[1].headers["Content-Type"]).toBe("application/json");
+    expect(lastCall[1].headers["x-nylas-connect"]).toBe(pkg.version);
   });
 
   function createValidIdToken(): string {
@@ -1245,21 +1287,21 @@ describe("NylasConnect (Identity Provider Token)", () => {
     expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
 
     // Verify the fetch was called with JSON content type and idp_claims
-    expect(mockFetch).toHaveBeenCalledWith(
+    const lastCallInclude = mockFetch.mock.calls.at(-1);
+    expect(lastCallInclude[0]).toBe(
       "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientId,
-          redirect_uri: redirectUri,
-          code: "auth_code_1",
-          grant_type: "authorization_code",
-          code_verifier: "verifier123",
-          idp_claims: mockIdpToken,
-        }),
+    );
+    expect(lastCallInclude[1].method).toBe("POST");
+    expect(lastCallInclude[1].headers["Content-Type"]).toBe("application/json");
+    expect(lastCallInclude[1].headers["x-nylas-connect"]).toBe(pkg.version);
+    expect(lastCallInclude[1].body).toBe(
+      JSON.stringify({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        code: "auth_code_1",
+        grant_type: "authorization_code",
+        code_verifier: "verifier123",
+        idp_claims: mockIdpToken,
       }),
     );
 
@@ -1310,21 +1352,19 @@ describe("NylasConnect (Identity Provider Token)", () => {
     );
 
     // Verify the fetch was called with JSON format but no idp_claims
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientId,
-          redirect_uri: redirectUri,
-          code: "auth_code_1",
-          grant_type: "authorization_code",
-          code_verifier: "verifier123",
-          // No idp_claims field
-        }),
+    const lastCallNull = mockFetch.mock.calls.at(-1);
+    expect(lastCallNull[0]).toBe("https://api.us.nylas.com/v3/connect/token");
+    expect(lastCallNull[1].method).toBe("POST");
+    expect(lastCallNull[1].headers["Content-Type"]).toBe("application/json");
+    expect(lastCallNull[1].headers["x-nylas-connect"]).toBe(pkg.version);
+    expect(lastCallNull[1].body).toBe(
+      JSON.stringify({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        code: "auth_code_1",
+        grant_type: "authorization_code",
+        code_verifier: "verifier123",
+        // No idp_claims field
       }),
     );
 
@@ -1378,17 +1418,17 @@ describe("NylasConnect (Identity Provider Token)", () => {
     expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
 
     // Verify the fetch was called without idp_claims (empty string is falsy)
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        body: JSON.stringify({
-          client_id: clientId,
-          redirect_uri: redirectUri,
-          code: "auth_code_1",
-          grant_type: "authorization_code",
-          code_verifier: "verifier123",
-          // No idp_claims field should be present for empty string
-        }),
+    const lastCallEmpty = mockFetch.mock.calls.at(-1);
+    expect(lastCallEmpty[0]).toBe("https://api.us.nylas.com/v3/connect/token");
+    expect(lastCallEmpty[1].headers["x-nylas-connect"]).toBe(pkg.version);
+    expect(lastCallEmpty[1].body).toBe(
+      JSON.stringify({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        code: "auth_code_1",
+        grant_type: "authorization_code",
+        code_verifier: "verifier123",
+        // No idp_claims field should be present for empty string
       }),
     );
   });
@@ -1433,21 +1473,19 @@ describe("NylasConnect (Identity Provider Token)", () => {
     );
 
     // Verify the fetch was called with JSON format but no idp_claims
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientId,
-          redirect_uri: redirectUri,
-          code: "auth_code_1",
-          grant_type: "authorization_code",
-          code_verifier: "verifier123",
-          // No idp_claims field
-        }),
+    const lastCallNoCb = mockFetch.mock.calls.at(-1);
+    expect(lastCallNoCb[0]).toBe("https://api.us.nylas.com/v3/connect/token");
+    expect(lastCallNoCb[1].method).toBe("POST");
+    expect(lastCallNoCb[1].headers["Content-Type"]).toBe("application/json");
+    expect(lastCallNoCb[1].headers["x-nylas-connect"]).toBe(pkg.version);
+    expect(lastCallNoCb[1].body).toBe(
+      JSON.stringify({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        code: "auth_code_1",
+        grant_type: "authorization_code",
+        code_verifier: "verifier123",
+        // No idp_claims field
       }),
     );
 
@@ -1502,17 +1540,17 @@ describe("NylasConnect (Identity Provider Token)", () => {
     expect(mockIdentityProviderToken).toHaveBeenCalledTimes(1);
 
     // Verify the fetch was called with the sync token
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.us.nylas.com/v3/connect/token",
-      expect.objectContaining({
-        body: JSON.stringify({
-          client_id: clientId,
-          redirect_uri: redirectUri,
-          code: "auth_code_1",
-          grant_type: "authorization_code",
-          code_verifier: "verifier123",
-          idp_claims: mockIdpToken,
-        }),
+    const lastCallSync = mockFetch.mock.calls.at(-1);
+    expect(lastCallSync[0]).toBe("https://api.us.nylas.com/v3/connect/token");
+    expect(lastCallSync[1].headers["x-nylas-connect"]).toBe(pkg.version);
+    expect(lastCallSync[1].body).toBe(
+      JSON.stringify({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        code: "auth_code_1",
+        grant_type: "authorization_code",
+        code_verifier: "verifier123",
+        idp_claims: mockIdpToken,
       }),
     );
   });
