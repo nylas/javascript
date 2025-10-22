@@ -875,6 +875,9 @@ describe("NylasConnect (custom code exchange)", () => {
     expect(result.accessToken).toBe("custom_access_token");
     expect(result.grantId).toBe("custom_grant_123");
 
+    // Trigger a token validation request so we can assert headers
+    await auth.getConnectionStatus();
+
     // Verify header present on token validation call
     const lastCallCustom = (fetch as any).mock.calls.at(-1);
     expect(lastCallCustom[1].headers["x-nylas-connect"]).toBe(pkg.version);
