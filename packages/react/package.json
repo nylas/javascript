@@ -3,27 +3,32 @@
   "version": "2.2.4",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "test": "vitest --run",
+    "build": "tsc && vite build",
+    "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write lib/",
-    "format:check": "prettier --check lib/",
-    "lint": "eslint lib/",
-    "lint:check": "eslint lib/ --max-warnings 0",
+    "format": "pnpm --workspace-root prettier --write packages/react/",
+    "format:check": "pnpm --workspace-root prettier --check packages/react/",
+    "lint": "oxlint --fix . && exit 0",
+    "lint:check": "oxlint .",
     "clean": "rm -rf dist",
     "dev": "vite build --watch --emptyOutDir=false",
     "dev:server": "vite",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "docs": "typedoc"
+    "coverage": "vitest run --coverage",
+    "docs": "typedoc",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nylas/nylas.git"
   },
+  "author": "Nylas Inc.",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
+  "packageManager": "pnpm@10.7.1",
   "files": [
     "dist"
   ],
@@ -83,27 +88,21 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^16.0.0",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.10",
+    "@types/node": "^20.11.13",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
-    "@types/testing-library__jest-dom": "^6.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitejs/plugin-react-swc": "^3.3.2",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
+    "@vitest/coverage-v8": "^2.1.9",
     "jsdom": "^26.0.0",
     "markdown-table": "^3.0.4",
-    "prettier": "^3.5.3",
     "tailwindcss": "^4.1.7",
     "tslib": "^2.6.2",
     "typedoc": "^0.28.3",
     "typedoc-plugin-markdown": "^4.6.3",
     "typescript": "^5.3.3",
-    "vite": "^4.5.2",
-    "vite-plugin-dts": "^3.6.3",
-    "vitest": "^3.2.4"
+    "vite": "^5.4.21",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^2.1.8"
   }
 }

@@ -134,10 +134,14 @@ export const calendarSyncStore = create<CalendarSyncStore>((set, get) => {
       );
       const responseData = response.data.data;
       set({ calendar: responseData });
-      if (onUpdate) onUpdate(responseData);
+      if (onUpdate) {
+        onUpdate(responseData);
+      }
       return responseData;
     } catch (err) {
-      if (onError) onError(err);
+      if (onError) {
+        onError(err);
+      }
       throw err;
     } finally {
       set({
@@ -241,7 +245,9 @@ export const calendarSyncStore = create<CalendarSyncStore>((set, get) => {
         selectedFilters: calendar?.notetaker?.rules?.event_selection ?? [],
         name: calendar?.notetaker?.name ?? notetakerName ?? "",
       });
-      if (onCancelCallback) onCancelCallback();
+      if (onCancelCallback) {
+        onCancelCallback();
+      }
     },
 
     // API operations
@@ -262,13 +268,21 @@ export const calendarSyncStore = create<CalendarSyncStore>((set, get) => {
 
         if (meetingSettings) {
           types = [];
-          if (meetingSettings.video_recording) types.push(RecordingType.Video);
-          if (meetingSettings.audio_recording) types.push(RecordingType.Audio);
-          if (meetingSettings.transcription)
+          if (meetingSettings.video_recording) {
+            types.push(RecordingType.Video);
+          }
+          if (meetingSettings.audio_recording) {
+            types.push(RecordingType.Audio);
+          }
+          if (meetingSettings.transcription) {
             types.push(RecordingType.Transcript);
-          if (meetingSettings.summary) types.push(RecordingType.Summary);
-          if (meetingSettings.action_items)
+          }
+          if (meetingSettings.summary) {
+            types.push(RecordingType.Summary);
+          }
+          if (meetingSettings.action_items) {
             types.push(RecordingType.ActionItems);
+          }
           showAdvanced = types.length !== DEFAULT_RECORDING_TYPES.length;
         }
 
@@ -310,8 +324,9 @@ export const calendarSyncStore = create<CalendarSyncStore>((set, get) => {
       try {
         await updateCalendar(calendarId, grantId, payload, onUpdate, onError);
         // Hide advanced settings if all recording types are selected
-        if (rType.length === DEFAULT_RECORDING_TYPES.length)
+        if (rType.length === DEFAULT_RECORDING_TYPES.length) {
           set({ advancedSettings: false });
+        }
       } catch (err) {
         // Error already handled in updateCalendar
       }
@@ -341,7 +356,9 @@ export const calendarSyncStore = create<CalendarSyncStore>((set, get) => {
         // Reset state via handleCancel
         get().handleCancel(fallbackNotetakerName, onCancel);
 
-        if (onUpdate) onUpdate(fixedPayload);
+        if (onUpdate) {
+          onUpdate(fixedPayload);
+        }
       } catch (err) {
         // Error already handled in updateCalendar
       }

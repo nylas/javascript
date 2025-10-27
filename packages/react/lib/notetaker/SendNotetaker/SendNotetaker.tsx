@@ -145,7 +145,9 @@ export const sendNotetakerStore = create<SendNotetakerStore>((set, get) => ({
     const { name, meetingLink, date, time, selectedRecordingTypes, reset } =
       state;
     const isValid = !!meetingLink;
-    if (!isValid || state.isLoading) return;
+    if (!isValid || state.isLoading) {
+      return;
+    }
     set({ isLoading: true });
     // Prepare join time if date and time are set
     let join_time;
@@ -176,12 +178,16 @@ export const sendNotetakerStore = create<SendNotetakerStore>((set, get) => ({
       .post(`/v3/grants/${grantId}/notetakers`, payload)
       .then((res) => {
         const { data } = res;
-        if (onSend) onSend(data, reset);
+        if (onSend) {
+          onSend(data, reset);
+        }
         set({ isLoading: false });
       })
       .catch((error) => {
         console.error("Failed to send notetaker:", error);
-        if (onError) onError(error);
+        if (onError) {
+          onError(error);
+        }
         set({ isLoading: false });
       });
   },

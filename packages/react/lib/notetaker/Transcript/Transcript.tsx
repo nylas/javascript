@@ -92,7 +92,9 @@ const Text: React.FC<{
   text: string;
   highlight: string | null;
 }> = ({ text, highlight }) => {
-  if (!highlight) return <div>{text}</div>;
+  if (!highlight) {
+    return <div>{text}</div>;
+  }
   const parts = text.split(new RegExp(`(${highlight})`, "gi"));
   return (
     <div>
@@ -230,7 +232,9 @@ const Transcript: React.FC<TranscriptProps> = ({
   }, []); // No dependencies needed as refs are stable
 
   const processedTranscripts = useMemo((): ProcessedTranscriptItem[] => {
-    if (!transcript || transcript.length === 0) return [];
+    if (!transcript || transcript.length === 0) {
+      return [];
+    }
     const candidateIndex =
       transcript.findIndex((item) => item.start / 1000 >= currentTime) - 1;
     let res = transcript.map((item, index) => ({
@@ -273,7 +277,9 @@ const Transcript: React.FC<TranscriptProps> = ({
   }, [processedTranscripts, autoscroll, userScrolledAway]); // Added userScrolledAway dependency
 
   const handleCopyTimestamp = useCallback((item: ProcessedTranscriptItem) => {
-    if (!item.ts || !item.speaker || !item.text) return;
+    if (!item.ts || !item.speaker || !item.text) {
+      return;
+    }
     navigator.clipboard.writeText(`${item.ts} ${item.speaker}: ${item.text}`);
   }, []);
 
