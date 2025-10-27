@@ -3,8 +3,6 @@
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Transcript } from "./notetaker";
-import "./notetaker/style.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -87,11 +85,7 @@ const transcriptData = [
   },
 ];
 
-const App: React.FC = () => (
-  <div style={styles.container}>
-    <Transcript transcript={transcriptData} />
-  </div>
-);
+const App: React.FC = () => <div style={styles.container}></div>;
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
