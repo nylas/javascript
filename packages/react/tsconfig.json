@@ -26,6 +26,6 @@
     "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "vitest.setup.ts"],
   "exclude": ["node_modules", "dist"]
 }

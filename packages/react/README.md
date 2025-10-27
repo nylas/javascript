@@ -9,8 +9,6 @@ React components for Nylas Scheduler
 - [Node.js](https://nodejs.org/en/) v20 or higher
 - [React.js](https://react.dev/) v18 or higher
 
-## Compatibility Notice
-
 ## Installation
 
 Install Nylas React Components via npm:
