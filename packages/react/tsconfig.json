@@ -10,6 +10,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
+    "types": ["vitest/globals"],
 
     // Relaxed strictness
     "noImplicitAny": false,
