@@ -10,19 +10,10 @@ export default defineConfig({
       formats: ["es"],
       fileName: "index",
     },
-    rollupOptions: {
-      external: ["react", "react-dom"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
-    },
     sourcemap: true,
     minify: "esbuild",
     target: "es2022",
-  },
+  },  
   server: {
     port: 3000,
     open: true,

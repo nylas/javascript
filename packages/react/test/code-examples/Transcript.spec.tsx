@@ -3,7 +3,7 @@ import { it } from "vitest";
 
 // --- example code:start --
 import React from "react";
-import { Transcript } from "../../lib/notetaker/Transcript/Transcript";
+import { Transcript } from "../../src/notetaker/Transcript/Transcript";
 
 const transcriptData = [
   {

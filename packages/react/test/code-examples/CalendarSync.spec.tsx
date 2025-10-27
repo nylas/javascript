@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { it } from "vitest";
 
 // --- example code:start --
-import { CalendarSync } from "../../lib/notetaker/CalendarSync/CalendarSync";
+import { CalendarSync } from "../../src/notetaker/CalendarSync/CalendarSync";
 import React from "react";
 
 function App() {

@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "types": ["vitest/globals"],
 
     // Relaxed strictness
     "noImplicitAny": false,

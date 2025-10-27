@@ -10,15 +10,18 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, "lib/index.ts"),
-        connect: resolve(__dirname, "lib/connect.ts"),
-        elements: resolve(__dirname, "lib/elements.ts"),
-        notetaker: resolve(__dirname, "lib/notetaker.ts"),
-        utils: resolve(__dirname, "lib/utils.ts"),
+        index: resolve(__dirname, "src/index.ts"),
+        connect: resolve(__dirname, "src/connect.ts"),
+        elements: resolve(__dirname, "src/elements.ts"),
+        notetaker: resolve(__dirname, "src/notetaker.ts"),
+        utils: resolve(__dirname, "src/utils.ts"),
       },
       formats: ["es", "cjs"],
     },
     cssCodeSplit: false,
+    sourcemap: true,
+    minify: "esbuild",
+    target: "es2022",
     rollupOptions: {
       external: [
         "react",

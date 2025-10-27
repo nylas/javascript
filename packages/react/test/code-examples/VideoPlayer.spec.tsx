@@ -3,7 +3,7 @@ import { it } from "vitest";
 
 // --- example code:start --
 import React from "react";
-import { VideoPlayer } from "../../lib/notetaker/VideoPlayer/VideoPlayer";
+import { VideoPlayer } from "../../src/notetaker/VideoPlayer/VideoPlayer";
 
 function App() {
   return (

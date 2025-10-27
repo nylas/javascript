@@ -3,7 +3,7 @@ import { it } from "vitest";
 
 // --- example code:start --
 import React from "react";
-import { SendNotetaker } from "../../lib/notetaker/SendNotetaker/SendNotetaker";
+import { SendNotetaker } from "../../src/notetaker/SendNotetaker/SendNotetaker";
 
 function App() {
   return (

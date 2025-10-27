@@ -1,6 +1,7 @@
 {
   "name": "@nylas/react",
   "version": "2.2.4",
+  "description": "React components and hooks for Nylas API integration",
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
@@ -23,6 +24,16 @@
     "type": "git",
     "url": "git+https://github.com/nylas/nylas.git"
   },
+  "keywords": [
+    "nylas",
+    "react",
+    "components",
+    "hooks",
+    "email",
+    "calendar",
+    "contacts",
+    "oauth2"
+  ],
   "author": "Nylas Inc.",
   "license": "MIT",
   "publishConfig": {

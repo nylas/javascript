@@ -26,6 +26,6 @@
     "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["lib/**/*", "test/**/*"],
+  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }

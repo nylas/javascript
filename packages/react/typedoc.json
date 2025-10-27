@@ -3,7 +3,7 @@
   "name": "nylas-react",
   "tsconfig": "./tsconfig.typedoc.json",
   "plugin": ["typedoc-plugin-markdown"],
-  "entryPoints": ["./lib/notetaker/**/*.{ts,tsx}"],
+  "entryPoints": ["./src/notetaker/**/*.{ts,tsx}"],
   "flattenOutputFiles": true,
   "excludeScopesInPaths": true,
   "hidePageHeader": true,
