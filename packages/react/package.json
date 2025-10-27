@@ -59,11 +59,6 @@
       "require": "./dist/cjs/elements.js",
       "types": "./dist/elements.d.ts"
     },
-    "./notetaker": {
-      "import": "./dist/es/notetaker.js",
-      "require": "./dist/cjs/notetaker.js",
-      "types": "./dist/notetaker.d.ts"
-    },
     "./utils": {
       "import": "./dist/es/utils.js",
       "require": "./dist/cjs/utils.js",

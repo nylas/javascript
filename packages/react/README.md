@@ -23,6 +23,16 @@ or yarn
   yarn add @nylas/react@latest
 ```
 
+## Exports overview
+
+- **Elements**
+  - `NylasSchedulerEditor`, `NylasScheduling`, `NylasSchedulingMethod`
+  - Import from `@nylas/react` or `@nylas/react/elements`
+
+- **Connect**
+  - `useNylasConnect`, `NylasConnectButton`
+  - Import from `@nylas/react` or `@nylas/react/connect`
+
 ## Getting Started
 
 The following example adds the Nylas Scheduler Editor and Scheduling components to your React app.
@@ -62,7 +72,7 @@ function App() {
           element={
             <div>
               <NylasSchedulerEditor
-                schedulerPreviewLink={`${window.location.origin}/?config_id={config.id}`}
+                schedulerPreviewLink={`${window.location.origin}/?config_id=${config.id}`}
                 nylasSessionsConfig={{
                   clientId: "NYLAS_CLIENT_ID", // Replace with your Nylas client ID from the previous
                   redirectUri: `${window.location.origin}/scheduler-editor`,
@@ -301,7 +311,7 @@ function App() {
 
 ## Links
 
-For a complete walkthrough on setting up Scheduler can be found at [https://developer.nylas.com/docs/v3/getting-started/scheduler/](https://developer.nylas.com/docs/v3/getting-started/scheduler/), with the complete code available on [GitHub](https://github.com/nylas-samples/quickstart-scheduler-react).
+A complete walkthrough for setting up Scheduler can be found at [https://developer.nylas.com/docs/v3/getting-started/scheduler/](https://developer.nylas.com/docs/v3/getting-started/scheduler/), with the complete code available on [GitHub](https://github.com/nylas-samples/quickstart-scheduler-react).
 
 ### Further reading:
 
