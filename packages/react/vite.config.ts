@@ -13,7 +13,6 @@ export default defineConfig({
         index: resolve(__dirname, "src/index.ts"),
         connect: resolve(__dirname, "src/connect.ts"),
         elements: resolve(__dirname, "src/elements.ts"),
-        notetaker: resolve(__dirname, "src/notetaker.ts"),
         utils: resolve(__dirname, "src/utils.ts"),
       },
       formats: ["es", "cjs"],
