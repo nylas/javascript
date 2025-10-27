@@ -105,15 +105,6 @@ npm run dev -- --port <PORT>
 
 After you run the command, open your browser to `http://localhost:<PORT>/scheduler-editor` to see your Scheduler Editor and create your first Scheduling Page.
 
-## Links
-
-For a complete walkthrough on setting up Scheduler can be found at [https://developer.nylas.com/docs/v3/getting-started/scheduler/](https://developer.nylas.com/docs/v3/getting-started/scheduler/), with the complete code available on [GitHub](https://github.com/nylas-samples/quickstart-scheduler-react).
-
-### Further reading:
-
-- [Scheduler documentation](https://developer.nylas.com/docs/v3/scheduler/)
-- [Scheduler API reference](https://developer.nylas.com/docs/api/v3/scheduler/)
-- [Developer Forums](https://forums.nylas.com/)
 
 ## Nylas Connect Hook
 
@@ -195,3 +186,127 @@ const { isConnected, connect } = useNylasConnect({
 ```
 
 
+
+
+
+## Nylas Connect Button
+
+The `NylasConnectButton` component provides a simple way to add email provider authentication to your React application.
+
+### Basic Usage
+
+```jsx
+import { NylasConnectButton } from "@nylas/react";
+
+function App() {
+  return (
+    <NylasConnectButton
+      clientId="your-nylas-client-id"
+      redirectUri="http://localhost:3000/callback"
+      onSuccess={(result) => {
+        console.log("Connected successfully:", result);
+      }}
+      onError={(error) => {
+        console.error("Connection failed:", error);
+      }}
+    />
+  );
+}
+```
+
+### External Identity Provider Integration
+
+For applications that use external identity providers (via JWKS), you can pass identity provider tokens during authentication:
+
+```jsx
+import { NylasConnectButton } from "@nylas/react";
+
+function App() {
+  // Function to retrieve JWT token from your external identity provider
+  const getIdpToken = async () => {
+    // Get the JWT token from your authentication system
+    const token = await yourAuthSystem.getJWT();
+    return token; // or return null if not available
+  };
+
+  return (
+    <NylasConnectButton
+      clientId="your-nylas-client-id"
+      redirectUri="http://localhost:3000/callback"
+      identityProviderToken={getIdpToken}
+      onSuccess={(result) => {
+        console.log("Connected with IDP claims:", result);
+      }}
+      onError={(error) => {
+        console.error("Connection failed:", error);
+      }}
+    />
+  );
+}
+```
+
+### Custom Backend Code Exchange
+
+For enhanced security, you can handle the OAuth code exchange on your backend:
+
+```jsx
+import { NylasConnectButton } from "@nylas/react";
+
+function App() {
+  const handleCodeExchange = async (params) => {
+    // Send the authorization code to your backend
+    const response = await fetch("/api/auth/exchange", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: params.code,
+        state: params.state,
+        clientId: params.clientId,
+        redirectUri: params.redirectUri,
+        scopes: params.scopes,
+        provider: params.provider,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Token exchange failed: ${response.statusText}`);
+    }
+
+    const tokenData = await response.json();
+
+    // Return the expected ConnectResult format
+    return {
+      accessToken: tokenData.access_token,
+      idToken: tokenData.id_token,
+      grantId: tokenData.grant_id,
+      expiresAt: Date.now() + tokenData.expires_in * 1000,
+      scope: tokenData.scope,
+      grantInfo: tokenData.grant_info,
+    };
+  };
+
+  return (
+    <NylasConnectButton
+      clientId="your-nylas-client-id"
+      redirectUri="http://localhost:3000/callback"
+      codeExchange={handleCodeExchange}
+      onSuccess={(result) => {
+        console.log("Connected successfully:", result);
+      }}
+      onError={(error) => {
+        console.error("Connection failed:", error);
+      }}
+    />
+  );
+}
+```
+
+## Links
+
+For a complete walkthrough on setting up Scheduler can be found at [https://developer.nylas.com/docs/v3/getting-started/scheduler/](https://developer.nylas.com/docs/v3/getting-started/scheduler/), with the complete code available on [GitHub](https://github.com/nylas-samples/quickstart-scheduler-react).
+
+### Further reading:
+
+- [Scheduler documentation](https://developer.nylas.com/docs/v3/scheduler/)
+- [Scheduler API reference](https://developer.nylas.com/docs/api/v3/scheduler/)
+- [Developer Forums](https://forums.nylas.com/)

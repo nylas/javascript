@@ -16,6 +16,9 @@ export type {
   ConnectEvent,
   ConnectStateChangeCallback,
   SessionData,
+  IdentityProviderTokenCallback,
+  CodeExchangeMethod,
+  CodeExchangeParams,
 } from "@nylas/connect";
 
 // Export hook-specific types

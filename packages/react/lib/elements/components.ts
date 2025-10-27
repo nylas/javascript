@@ -416,6 +416,11 @@ import {
   NylasNotification as NylasNotificationElement,
   defineCustomElement as defineNylasNotification,
 } from "@nylas/web-elements/dist/components/nylas-notification.js";
+// NOTE: Component not available in current web-elements version
+// import {
+//   NylasOnlySpecificTimeAvailability as NylasOnlySpecificTimeAvailabilityElement,
+//   defineCustomElement as defineNylasOnlySpecificTimeAvailability,
+// } from "@nylas/web-elements/dist/components/nylas-only-specific-time-availability.js";
 import {
   NylasOrganizerConfirmationCard as NylasOrganizerConfirmationCardElement,
   defineCustomElement as defineNylasOrganizerConfirmationCard,
@@ -2641,6 +2646,33 @@ export const NylasNotification: StencilReactComponent<
   events: {} as NylasNotificationEvents,
   defineCustomElement: defineNylasNotification,
 });
+
+// NOTE: Component not available in current web-elements version
+// export type NylasOnlySpecificTimeAvailabilityEvents = {
+//   onValueChanged: EventName<
+//     CustomEvent<{
+//       value: string;
+//       name: string;
+//     }>
+//   >;
+// };
+//
+// export const NylasOnlySpecificTimeAvailability: StencilReactComponent<
+//   NylasOnlySpecificTimeAvailabilityElement,
+//   NylasOnlySpecificTimeAvailabilityEvents
+// > = /*@__PURE__*/ createComponent<
+//   NylasOnlySpecificTimeAvailabilityElement,
+//   NylasOnlySpecificTimeAvailabilityEvents
+// >({
+//   tagName: "nylas-only-specific-time-availability",
+//   elementClass: NylasOnlySpecificTimeAvailabilityElement,
+//   // @ts-ignore - ignore potential React type mismatches between the Stencil Output Target and your project.
+//   react: React,
+//   events: {
+//     onValueChanged: "valueChanged",
+//   } as NylasOnlySpecificTimeAvailabilityEvents,
+//   defineCustomElement: defineNylasOnlySpecificTimeAvailability,
+// });
 
 export type NylasOrganizerConfirmationCardEvents = {
   onRejectBookingButtonClicked: EventName<

@@ -1,5 +1,11 @@
+// Auto-load CSS styles
+import "./NylasConnectButton.css";
+
 // React hook for Nylas connection
 export { useNylasConnect } from "./useNylasConnect";
+
+// Export NylasConnectButton component
+export { NylasConnectButton } from "./NylasConnectButton";
 
 // Export all auth-related types
 export * from "./types";

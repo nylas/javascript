@@ -1,0 +1,143 @@
+/*
+  Theme defaults (system-aware)
+  - Light: white bg, gray border, dark text
+  - Dark: very dark gray bg, white text, darker border
+  Consumers can override by setting these CSS variables on any ancestor,
+  or by applying `.nylas-theme-light` / `.nylas-theme-dark` or [data-theme] attributes.
+*/
+:root {
+  color-scheme: light dark;
+  --nylas-btn-bg: #ffffff;
+  --nylas-btn-fg: #111111;
+  --nylas-btn-border: #d1d5db;
+  --nylas-btn-bg-hover: #f5f5f5;
+  --nylas-btn-bg-active: #e5e5e5;
+  --nylas-btn-bg-focus: #f5f5f5;
+  --nylas-btn-border-active: #a1a1aa;
+  --nylas-btn-border-focus: #3b82f6;
+  --nylas-btn-border-radius: 6px;
+  --nylas-btn-font-weight: 500;
+  --nylas-btn-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --nylas-btn-shadow-hover:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --nylas-btn-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --nylas-btn-shadow-active: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nylas-btn-bg: #1a1a1a; /* ~90% black */
+    --nylas-btn-fg: #ffffff;
+    --nylas-btn-border: #333333;
+    --nylas-btn-bg-hover: #2a2a2a;
+    --nylas-btn-bg-active: #0f0f0f;
+    --nylas-btn-bg-focus: #2a2a2a;
+    --nylas-btn-border-active: #555555;
+    --nylas-btn-border-focus: #60a5fa;
+    --nylas-btn-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --nylas-btn-shadow-hover:
+      0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --nylas-btn-shadow-focus: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    --nylas-btn-shadow-active: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Force higher specificity for theme overrides */
+.nylas-theme-light .nylas-btn.nylas-btn,
+[data-theme="light"] .nylas-btn.nylas-btn {
+  --nylas-btn-bg: #ffffff !important;
+  --nylas-btn-fg: #111111 !important;
+  --nylas-btn-border: #d1d5db !important;
+  --nylas-btn-bg-hover: #f5f5f5 !important;
+  --nylas-btn-bg-active: #e5e5e5 !important;
+  --nylas-btn-bg-focus: #f5f5f5 !important;
+  --nylas-btn-border-active: #a1a1aa !important;
+  --nylas-btn-border-focus: #3b82f6 !important;
+  --nylas-btn-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  --nylas-btn-shadow-hover:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  --nylas-btn-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  --nylas-btn-shadow-active: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.nylas-theme-dark .nylas-btn.nylas-btn,
+[data-theme="dark"] .nylas-btn.nylas-btn {
+  --nylas-btn-bg: #1a1a1a !important;
+  --nylas-btn-fg: #ffffff !important;
+  --nylas-btn-border: #333333 !important;
+  --nylas-btn-bg-hover: #2a2a2a !important;
+  --nylas-btn-bg-active: #0f0f0f !important;
+  --nylas-btn-bg-focus: #2a2a2a !important;
+  --nylas-btn-border-active: #555555 !important;
+  --nylas-btn-border-focus: #60a5fa !important;
+  --nylas-btn-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+  --nylas-btn-shadow-hover:
+    0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+  --nylas-btn-shadow-focus: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+  --nylas-btn-shadow-active: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.nylas-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--nylas-btn-border-radius);
+
+  border: 1px solid var(--nylas-btn-border);
+  background: var(--nylas-btn-bg);
+  color: var(--nylas-btn-fg);
+  font-weight: var(--nylas-btn-font-weight);
+  box-shadow: var(--nylas-btn-shadow);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nylas-btn:hover {
+  background: var(--nylas-btn-bg-hover);
+  box-shadow: var(--nylas-btn-shadow-hover);
+}
+
+.nylas-btn:focus {
+  outline: none;
+  background: var(--nylas-btn-bg-focus);
+  border-color: var(--nylas-btn-border-focus);
+  box-shadow: var(--nylas-btn-shadow-focus);
+}
+
+.nylas-btn:active {
+  background: var(--nylas-btn-bg-active);
+  border-color: var(--nylas-btn-border-active);
+  box-shadow: var(--nylas-btn-shadow-active);
+}
+
+.nylas-btn[disabled],
+.nylas-btn[aria-busy="true"] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.nylas-btn--sm {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.nylas-btn--md {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.nylas-btn--lg {
+  padding: 14px 18px;
+  font-size: 16px;
+}
+
+.nylas-btn--outline {
+  /* Outline follows current theme colors */
+  --nylas-btn-bg: transparent !important;
+  /* keep text and border from theme - inherit from parent theme */
+}

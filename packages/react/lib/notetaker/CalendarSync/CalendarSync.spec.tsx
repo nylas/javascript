@@ -152,7 +152,8 @@ describe("CalendarSync", () => {
     // Temporarily replace the mock
     const httpClient = await import("../lib/http-client");
     const originalGet = httpClient.default.get;
-    httpClient.default.get = partialRecordingMock as any;
+    httpClient.default.get =
+      partialRecordingMock as unknown as typeof httpClient.default.get;
 
     render(<CalendarSync {...defaultProps} />);
 
