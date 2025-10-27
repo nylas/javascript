@@ -13,7 +13,6 @@
     "lint:check": "oxlint .",
     "clean": "rm -rf dist",
     "dev": "vite build --watch --emptyOutDir=false",
-    "dev:server": "vite",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "coverage": "vitest run --coverage",

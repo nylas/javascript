@@ -19,7 +19,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:watch": "vite build --watch",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
