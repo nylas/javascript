@@ -6,6 +6,10 @@ export { useNylasConnect } from "./useNylasConnect";
 
 // Export NylasConnectButton component
 export { NylasConnectButton } from "./NylasConnectButton";
+export type {
+  NylasConnectButtonProps,
+  NylasConnectButtonClassNames,
+} from "./NylasConnectButton";
 
 // Export all auth-related types
 export * from "./types";
@@ -26,3 +30,20 @@ export {
   isConnectCallback,
   logger,
 } from "@nylas/connect";
+
+// Theme system (shared with notetaker components)
+export {
+  NylasThemeProvider,
+  useNylasTheme,
+  defaultLightTheme,
+  defaultDarkTheme,
+  mergeThemes,
+} from "../notetaker/lib/theme";
+export type {
+  NylasTheme,
+  NylasThemeColors,
+  NylasThemeSpacing,
+  NylasThemeBorderRadius,
+  NylasThemeShadows,
+  NylasThemeProviderProps,
+} from "../notetaker/lib/theme";

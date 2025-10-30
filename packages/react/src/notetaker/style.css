@@ -16,3 +16,205 @@
   --color-primary-900: #1a2b6b;
   --color-primary-950: #111a42;
 }
+
+/* ============================================
+   Nylas Component Theme Variables
+   ============================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Base Colors - Light Mode */
+  --nylas-bg: #ffffff;
+  --nylas-fg: #111827;
+  --nylas-border: #e5e7eb;
+  --nylas-muted-fg: #6b7280;
+  --nylas-text-secondary: #6b7280;
+
+  /* Primary Colors */
+  --nylas-primary: #4069e1;
+  --nylas-primary-hover: #2d4fc7;
+  --nylas-primary-light: #f0f4ff;
+  --nylas-primary-lighter: #e0e9ff;
+
+  /* Semantic Colors */
+  --nylas-danger: #dc2626;
+  --nylas-danger-hover: #b91c1c;
+  --nylas-error-light: #fee2e2;
+
+  /* Button Variables */
+  --nylas-btn-bg: #ffffff;
+  --nylas-btn-fg: #374151;
+  --nylas-btn-border: #e5e7eb;
+  --nylas-btn-bg-hover: #f9fafb;
+  --nylas-btn-primary-bg: var(--nylas-primary);
+  --nylas-btn-primary-fg: #ffffff;
+  --nylas-btn-primary-bg-hover: var(--nylas-primary-hover);
+  --nylas-btn-disabled-bg: #f3f4f6;
+  --nylas-btn-disabled-fg: #d1d5db;
+
+  /* Input Variables */
+  --nylas-input-bg: #ffffff;
+  --nylas-input-fg: #111827;
+  --nylas-input-border: #d1d5db;
+  --nylas-input-border-focus: var(--nylas-primary);
+  --nylas-input-placeholder: #9ca3af;
+  --nylas-input-disabled-bg: #f3f4f6;
+  --nylas-input-disabled-fg: #9ca3af;
+
+  /* Transcript Variables */
+  --nylas-transcript-bg: var(--nylas-bg);
+  --nylas-transcript-border: var(--nylas-border);
+  --nylas-transcript-item-bg: transparent;
+  --nylas-transcript-item-bg-hover: #f9fafb;
+  --nylas-transcript-item-bg-active: #eff6ff;
+  --nylas-transcript-toolbar-bg: var(--nylas-bg);
+  --nylas-transcript-toolbar-border: var(--nylas-border);
+  --nylas-transcript-timestamp: var(--nylas-primary);
+  --nylas-transcript-speaker: #1f2937;
+  --nylas-transcript-text: #374151;
+  --nylas-transcript-empty-icon: #f3f4f6;
+  --nylas-transcript-empty-text: #d1d5db;
+  --nylas-transcript-highlight-bg: #fef3c7;
+  --nylas-transcript-highlight-fg: #92400e;
+
+  /* Calendar Sync Variables */
+  --nylas-calendar-bg: var(--nylas-bg);
+  --nylas-calendar-label: var(--nylas-text-secondary);
+  --nylas-calendar-advanced-link: var(--nylas-text-secondary);
+  --nylas-calendar-advanced-link-hover: var(--nylas-primary);
+
+  /* Video Player Variables */
+  --nylas-video-bg: #000000;
+
+  /* Shadows */
+  --nylas-shadow-primary: 0 4px 6px -1px rgba(64, 105, 225, 0.2);
+}
+
+/* ============================================
+   Dark Mode
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nylas-bg: #0a0a0a;
+    --nylas-fg: #f9fafb;
+    --nylas-border: #27272a;
+    --nylas-muted-fg: #a1a1aa;
+    --nylas-text-secondary: #a1a1aa;
+    --nylas-primary: #60a5fa;
+    --nylas-primary-hover: #3b82f6;
+    --nylas-primary-light: #1e3a8a;
+    --nylas-primary-lighter: #1e40af;
+    --nylas-danger: #ef4444;
+    --nylas-danger-hover: #dc2626;
+    --nylas-error-light: #7f1d1d;
+    --nylas-btn-bg: #18181b;
+    --nylas-btn-fg: #f4f4f5;
+    --nylas-btn-border: #3f3f46;
+    --nylas-btn-bg-hover: #27272a;
+    --nylas-btn-primary-bg: var(--nylas-primary);
+    --nylas-btn-primary-fg: #0a0a0a;
+    --nylas-btn-primary-bg-hover: var(--nylas-primary-hover);
+    --nylas-btn-disabled-bg: #27272a;
+    --nylas-btn-disabled-fg: #52525b;
+    --nylas-input-bg: #18181b;
+    --nylas-input-fg: #f9fafb;
+    --nylas-input-border: #3f3f46;
+    --nylas-input-placeholder: #71717a;
+    --nylas-input-disabled-bg: #27272a;
+    --nylas-input-disabled-fg: #71717a;
+    --nylas-transcript-item-bg-hover: #18181b;
+    --nylas-transcript-item-bg-active: #1e293b;
+    --nylas-transcript-speaker: #f4f4f5;
+    --nylas-transcript-text: #d4d4d8;
+    --nylas-transcript-empty-icon: #27272a;
+    --nylas-transcript-empty-text: #52525b;
+    --nylas-transcript-highlight-bg: #78350f;
+    --nylas-transcript-highlight-fg: #fbbf24;
+    --nylas-shadow-primary: 0 4px 6px -1px rgba(96, 165, 250, 0.3);
+  }
+}
+
+/* ============================================
+   Explicit Theme Classes
+   Override prefers-color-scheme when user sets explicit theme
+   ============================================ */
+
+.nylas-theme-light,
+[data-theme="light"] {
+  color-scheme: light;
+  --nylas-bg: #ffffff;
+  --nylas-fg: #111827;
+  --nylas-border: #e5e7eb;
+  --nylas-muted-fg: #6b7280;
+  --nylas-text-secondary: #6b7280;
+  --nylas-primary: #4069e1;
+  --nylas-primary-hover: #2d4fc7;
+  --nylas-primary-light: #f0f4ff;
+  --nylas-primary-lighter: #e0e9ff;
+  --nylas-danger: #dc2626;
+  --nylas-danger-hover: #b91c1c;
+  --nylas-error-light: #fee2e2;
+  --nylas-btn-bg: #ffffff;
+  --nylas-btn-fg: #374151;
+  --nylas-btn-border: #e5e7eb;
+  --nylas-btn-bg-hover: #f9fafb;
+  --nylas-btn-primary-fg: #ffffff;
+  --nylas-btn-disabled-bg: #f3f4f6;
+  --nylas-btn-disabled-fg: #d1d5db;
+  --nylas-input-bg: #ffffff;
+  --nylas-input-fg: #111827;
+  --nylas-input-border: #d1d5db;
+  --nylas-input-placeholder: #9ca3af;
+  --nylas-input-disabled-bg: #f3f4f6;
+  --nylas-input-disabled-fg: #9ca3af;
+  --nylas-transcript-item-bg-hover: #f9fafb;
+  --nylas-transcript-item-bg-active: #eff6ff;
+  --nylas-transcript-speaker: #1f2937;
+  --nylas-transcript-text: #374151;
+  --nylas-transcript-empty-icon: #f3f4f6;
+  --nylas-transcript-empty-text: #d1d5db;
+  --nylas-transcript-highlight-bg: #fef3c7;
+  --nylas-transcript-highlight-fg: #92400e;
+  --nylas-shadow-primary: 0 4px 6px -1px rgba(64, 105, 225, 0.2);
+}
+
+.nylas-theme-dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --nylas-bg: #0a0a0a;
+  --nylas-fg: #f9fafb;
+  --nylas-border: #27272a;
+  --nylas-muted-fg: #a1a1aa;
+  --nylas-text-secondary: #a1a1aa;
+  --nylas-primary: #60a5fa;
+  --nylas-primary-hover: #3b82f6;
+  --nylas-primary-light: #1e3a8a;
+  --nylas-primary-lighter: #1e40af;
+  --nylas-danger: #ef4444;
+  --nylas-danger-hover: #dc2626;
+  --nylas-error-light: #7f1d1d;
+  --nylas-btn-bg: #18181b;
+  --nylas-btn-fg: #f4f4f5;
+  --nylas-btn-border: #3f3f46;
+  --nylas-btn-bg-hover: #27272a;
+  --nylas-btn-primary-fg: #0a0a0a;
+  --nylas-btn-disabled-bg: #27272a;
+  --nylas-btn-disabled-fg: #52525b;
+  --nylas-input-bg: #18181b;
+  --nylas-input-fg: #f9fafb;
+  --nylas-input-border: #3f3f46;
+  --nylas-input-placeholder: #71717a;
+  --nylas-input-disabled-bg: #27272a;
+  --nylas-input-disabled-fg: #71717a;
+  --nylas-transcript-item-bg-hover: #18181b;
+  --nylas-transcript-item-bg-active: #1e293b;
+  --nylas-transcript-speaker: #f4f4f5;
+  --nylas-transcript-text: #d4d4d8;
+  --nylas-transcript-empty-icon: #27272a;
+  --nylas-transcript-empty-text: #52525b;
+  --nylas-transcript-highlight-bg: #78350f;
+  --nylas-transcript-highlight-fg: #fbbf24;
+  --nylas-shadow-primary: 0 4px 6px -1px rgba(96, 165, 250, 0.3);
+}

@@ -1,12 +1,38 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import type { CSSProperties } from "react";
 import { label, input, button } from "../lib/primitives";
 
 import { create } from "zustand";
 import client from "../lib/http-client";
 import { RecordingType, Notetaker } from "../types";
+import type { NylasTheme } from "../lib/theme";
+import { themeToCSSVars } from "../lib/theme";
 import { DEFAULT_RECORDING_TYPES, RECORDING_TYPES } from "../lib/constants";
 
 type NotetakerPayload = Partial<Notetaker>;
+
+/**
+ * Class names for SendNotetaker component slots.
+ * Allows granular control over styling of internal elements.
+ */
+export interface SendNotetakerClassNames {
+  /** Root container class */
+  container?: string;
+  /** Label class */
+  label?: string;
+  /** Input field class */
+  input?: string;
+  /** Date/time container class */
+  dateTimeContainer?: string;
+  /** Advanced settings link class */
+  advancedSettings?: string;
+  /** Recording settings section class */
+  recordingSettings?: string;
+  /** Individual recording button class */
+  recordingButton?: string;
+  /** Submit button class */
+  submitButton?: string;
+}
 
 /**
  * Interface for the SendNotetaker component state store.
@@ -230,6 +256,27 @@ export interface SendNotetakerProps {
    * @param error The error that occurred
    */
   onError?: (error: any) => void;
+  /**
+   * Class names for internal component slots.
+   * @example
+   * ```tsx
+   * <SendNotetaker
+   *   classNames={{
+   *     container: 'my-custom-container',
+   *     submitButton: 'my-custom-submit-btn'
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: SendNotetakerClassNames;
+  /**
+   * Inline styles for the root container.
+   */
+  style?: CSSProperties;
+  /**
+   * Theme configuration for the send notetaker component.
+   */
+  theme?: NylasTheme;
 }
 
 export function SendNotetaker({
@@ -238,6 +285,9 @@ export function SendNotetaker({
   onError,
   notetakerName,
   grantId = "me",
+  classNames,
+  style,
+  theme,
 }: SendNotetakerProps) {
   const {
     name,
@@ -265,11 +315,22 @@ export function SendNotetaker({
   // Only meeting link is required
   const isValid = !!meetingLink;
 
+  // Convert theme to inline styles if provided
+  const themeStyles = useMemo(() => themeToCSSVars(theme), [theme]);
+
+  const combinedStyles = { ...themeStyles, ...style };
+
   return (
-    <div className={`ny:flex ny:flex-col ny:gap-3 ${className}`}>
+    <div
+      className={`ny:flex ny:flex-col ny:gap-3 ny:bg-[var(--nylas-calendar-bg)] ${className || ""} ${classNames?.container || ""}`}
+      style={combinedStyles}
+    >
       {/* Notetaker name */}
       <div>
-        <label htmlFor="notetaker-name" className={label()}>
+        <label
+          htmlFor="notetaker-name"
+          className={`${label()} ${classNames?.label || ""}`}
+        >
           Notetaker name:
         </label>
         <input
@@ -277,13 +338,16 @@ export function SendNotetaker({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className={input()}
+          className={`${input()} ${classNames?.input || ""}`}
           placeholder="Notetaker name"
         />
       </div>
       {/* Meeting link */}
       <div>
-        <label htmlFor="meeting-link" className={label()}>
+        <label
+          htmlFor="meeting-link"
+          className={`${label()} ${classNames?.label || ""}`}
+        >
           Meeting link:
         </label>
         <input
@@ -292,32 +356,36 @@ export function SendNotetaker({
           value={meetingLink}
           required
           onChange={(e) => setMeetingLink(e.target.value)}
-          className={input()}
+          className={`${input()} ${classNames?.input || ""}`}
           placeholder="https://meet.google.com/..."
         />
       </div>
       {/* Join date and time */}
       <div>
-        <label className={label()}>Join date and time:</label>
-        <div className="ny:flex ny:gap-2">
+        <label className={`${label()} ${classNames?.label || ""}`}>
+          Join date and time:
+        </label>
+        <div
+          className={`ny:flex ny:gap-2 ${classNames?.dateTimeContainer || ""}`}
+        >
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className={input()}
+            className={`${input()} ${classNames?.input || ""}`}
           />
           <input
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className={input()}
+            className={`${input()} ${classNames?.input || ""}`}
           />
         </div>
       </div>
       {/* Advanced settings toggle and section */}
       {!advancedSettings && (
         <div
-          className="ny:hover:text-primary-500 ny:text-sm ny:text-gray-500 ny:mb-2 ny:cursor-pointer"
+          className={`ny:hover:text-[var(--nylas-calendar-advanced-link-hover)] ny:text-sm ny:text-[var(--nylas-calendar-advanced-link)] ny:mb-2 ny:cursor-pointer ${classNames?.advancedSettings || ""}`}
           onClick={() => setAdvancedSettings(true)}
           role="button"
           tabIndex={0}
@@ -326,8 +394,10 @@ export function SendNotetaker({
         </div>
       )}
       {advancedSettings && (
-        <div className="ny:my-2">
-          <label className={label()}>Recording settings:</label>
+        <div className={`ny:my-2 ${classNames?.recordingSettings || ""}`}>
+          <label className={`${label()} ${classNames?.label || ""}`}>
+            Recording settings:
+          </label>
           <div className="ny:flex ny:gap-2 ny:flex-wrap">
             {RECORDING_TYPES.map((it) => {
               const Icon = it.icon;
@@ -335,9 +405,9 @@ export function SendNotetaker({
                 <button
                   key={it.value}
                   type="button"
-                  className={button({
+                  className={`${button({
                     active: selectedRecordingTypes.includes(it.value),
-                  })}
+                  })} ${classNames?.recordingButton || ""}`}
                   onClick={() => toggleRecordingType(it.value)}
                 >
                   <Icon
@@ -354,10 +424,10 @@ export function SendNotetaker({
       <div className="ny:mt-2">
         <button
           type="button"
-          className={button({
+          className={`${button({
             variant: "primary",
             disabled: !isValid || isLoading,
-          })}
+          })} ${classNames?.submitButton || ""}`}
           disabled={!isValid || isLoading}
           onClick={() => handleSubmit(grantId, onSend, onError)}
         >

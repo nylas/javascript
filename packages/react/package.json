@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nylas/nylas.git"
+    "url": "git+https://github.com/nylas/javascript.git"
   },
   "keywords": [
     "nylas",
@@ -59,6 +59,11 @@
       "require": "./dist/cjs/elements.js",
       "types": "./dist/elements.d.ts"
     },
+    "./notetaker": {
+      "import": "./dist/es/notetaker.js",
+      "require": "./dist/cjs/notetaker.js",
+      "types": "./dist/notetaker.d.ts"
+    },
     "./utils": {
       "import": "./dist/es/utils.js",
       "require": "./dist/cjs/utils.js",
@@ -94,8 +99,8 @@
     "@testing-library/react": "^16.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^20.11.13",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/coverage-v8": "^2.1.9",

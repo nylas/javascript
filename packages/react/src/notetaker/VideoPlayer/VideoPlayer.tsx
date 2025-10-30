@@ -1,7 +1,10 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useCallback, useMemo } from "react";
+import type { CSSProperties } from "react";
 
 import { tv } from "tailwind-variants";
 import { create } from "zustand";
+import type { NylasTheme } from "../lib/theme";
+import { themeToCSSVars } from "../lib/theme";
 
 interface VideoStore {
   currentTime: number;
@@ -17,6 +20,17 @@ export const videoPlayerStore = create<VideoStore>((set) => ({
   setCurrentTime: (time: number) => set({ currentTime: time }),
   setIsPlaying: (playing: boolean) => set({ isPlaying: playing }),
 }));
+
+/**
+ * Class names for VideoPlayer component slots.
+ * Allows granular control over styling of internal elements.
+ */
+export interface VideoPlayerClassNames {
+  /** Root container class */
+  container?: string;
+  /** Video element class */
+  video?: string;
+}
 
 /**
  * Props for the VideoPlayer component.
@@ -70,10 +84,31 @@ export interface VideoPlayerProps {
    * Callback when the video playback ends.
    */
   onEnded?: () => void;
+  /**
+   * Class names for internal component slots.
+   * @example
+   * ```tsx
+   * <VideoPlayer
+   *   classNames={{
+   *     container: 'my-custom-container',
+   *     video: 'my-custom-video'
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: VideoPlayerClassNames;
+  /**
+   * Inline styles for the root container.
+   */
+  style?: CSSProperties;
+  /**
+   * Theme configuration for the video player component.
+   */
+  theme?: NylasTheme;
 }
 
 const videoContainer = tv({
-  base: "ny:w-full",
+  base: "ny:w-full ny:bg-[var(--nylas-video-bg)]",
   variants: {},
 });
 
@@ -90,6 +125,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   onPause,
   onEnded,
   videoType,
+  classNames,
+  style,
+  theme,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { currentTime, setCurrentTime, setIsPlaying } = videoPlayerStore();
@@ -146,23 +184,33 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setCurrentTime(0);
   }, [videoUrl, setCurrentTime]);
 
+  // Convert theme to inline styles if provided
+  const themeStyles = useMemo(() => themeToCSSVars(theme), [theme]);
+
+  const combinedStyles = { ...themeStyles, ...style };
+
   return (
-    <video
-      ref={videoRef}
-      onTimeUpdate={handleTimeUpdate}
-      onSeeked={handleSeeked}
-      controls
-      poster={poster}
-      autoPlay={autoPlay}
-      muted={muted}
-      loop={loop}
-      className={videoContainer({ className })}
-      onPlay={handlePlay}
-      onPause={handlePause}
-      onEnded={handleEnded}
+    <div
+      className={`${videoContainer({ className: classNames?.container })}`}
+      style={combinedStyles}
     >
-      {videoUrl && <source src={videoUrl} type={videoType || "video/mp4"} />}
-      Your browser does not support the video tag.
-    </video>
+      <video
+        ref={videoRef}
+        onTimeUpdate={handleTimeUpdate}
+        onSeeked={handleSeeked}
+        controls
+        poster={poster}
+        autoPlay={autoPlay}
+        muted={muted}
+        loop={loop}
+        className={`ny:w-full ${className || ""} ${classNames?.video || ""}`}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onEnded={handleEnded}
+      >
+        {videoUrl && <source src={videoUrl} type={videoType || "video/mp4"} />}
+        Your browser does not support the video tag.
+      </video>
+    </div>
   );
 };

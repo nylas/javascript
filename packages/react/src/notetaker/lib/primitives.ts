@@ -3,7 +3,12 @@ import { tv } from "tailwind-variants";
 type NylasTw = `ny:${string}`;
 
 export const label = tv({
-  base: ["ny:text-sm", "ny:text-gray-500", "ny:mb-1", "ny:block"],
+  base: [
+    "ny:text-sm",
+    "ny:text-[var(--nylas-calendar-label)]",
+    "ny:mb-1",
+    "ny:block",
+  ],
 });
 
 export const button = tv({
@@ -12,9 +17,10 @@ export const button = tv({
     "ny:text-sm",
     "ny:rounded-lg",
     "ny:px-4",
-    "ny:border-gray-200",
-    "ny:text-gray-700",
-    "ny:hover:bg-gray-50",
+    "ny:border-[var(--nylas-btn-border)]",
+    "ny:text-[var(--nylas-btn-fg)]",
+    "ny:bg-[var(--nylas-btn-bg)]",
+    "ny:hover:bg-[var(--nylas-btn-bg-hover)]",
     "ny:transition-all",
     "ny:duration-200",
     "ny:transition-colors",
@@ -22,10 +28,6 @@ export const button = tv({
     "ny:flex",
     "ny:items-center",
     "ny:space-x-1",
-    "ny:text-sm",
-    "ny:text-gray-700",
-    "ny:hover:text-gray-900",
-    "ny:hover:bg-gray-100",
     "ny:outline-none",
     "ny:cursor-pointer",
   ] satisfies NylasTw[],
@@ -35,43 +37,44 @@ export const button = tv({
     },
     variant: {
       primary: [
-        "ny:bg-primary-500",
-        "ny:text-white",
-        "ny:border-primary-500",
-        "ny:hover:bg-primary-600",
-        "ny:hover:text-white",
-        "ny:shadow-md",
-        "ny:shadow-primary-100",
+        "ny:bg-[var(--nylas-btn-primary-bg)]",
+        "ny:text-[var(--nylas-btn-primary-fg)]",
+        "ny:border-[var(--nylas-btn-primary-bg)]",
+        "ny:hover:bg-[var(--nylas-btn-primary-bg-hover)]",
+        "ny:hover:text-[var(--nylas-btn-primary-fg)]",
+        "ny:shadow-[var(--nylas-shadow-primary)]",
         "ny:outline-none",
       ] satisfies NylasTw[],
       link: [
         "ny:bg-transparent",
-        "ny:text-primary-500",
-        "ny:hover:text-primary-600",
+        "ny:text-[var(--nylas-primary)]",
+        "ny:hover:text-[var(--nylas-primary-hover)]",
         "ny:border-none",
         "ny:font-medium",
         "ny:cursor-pointer",
       ] satisfies NylasTw[],
     },
     color: {
-      danger: ["ny:text-red-500", "ny:hover:text-red-600"] satisfies NylasTw[],
+      danger: [
+        "ny:text-[var(--nylas-danger)]",
+        "ny:hover:text-[var(--nylas-danger-hover)]",
+      ] satisfies NylasTw[],
     },
     active: {
       true: [
-        "ny:bg-primary-50",
-        "ny:border-primary-500",
-        "ny:text-primary-500",
-        "ny:hover:bg-primary-100",
-        "ny:shadow-md",
-        "ny:shadow-primary-100",
+        "ny:bg-[var(--nylas-primary-light)]",
+        "ny:border-[var(--nylas-primary)]",
+        "ny:text-[var(--nylas-primary)]",
+        "ny:hover:bg-[var(--nylas-primary-lighter)]",
+        "ny:shadow-[var(--nylas-shadow-primary)]",
       ] satisfies NylasTw[],
     },
     disabled: {
       true: [
-        "ny:border-gray-100",
-        "ny:text-gray-400",
-        "ny:hover:bg-gray-100",
-        "ny:bg-gray-100",
+        "ny:border-[var(--nylas-btn-border)]",
+        "ny:text-[var(--nylas-btn-disabled-fg)]",
+        "ny:hover:bg-[var(--nylas-btn-disabled-bg)]",
+        "ny:bg-[var(--nylas-btn-disabled-bg)]",
         "ny:shadow-none",
         "ny:cursor-not-allowed",
       ] satisfies NylasTw[],
@@ -82,10 +85,12 @@ export const button = tv({
       variant: "primary",
       disabled: true,
       class: [
-        "ny:bg-gray-100",
-        "ny:text-gray-400",
+        "ny:bg-[var(--nylas-btn-disabled-bg)]",
+        "ny:text-[var(--nylas-btn-disabled-fg)]",
         "ny:cursor-not-allowed",
-        "ny:hover:text-gray-400",
+        "ny:hover:text-[var(--nylas-btn-disabled-fg)]",
+        "ny:hover:bg-[var(--nylas-btn-disabled-bg)]",
+        "ny:border-[var(--nylas-btn-disabled-bg)]",
       ] satisfies NylasTw[],
     },
     {
@@ -94,8 +99,8 @@ export const button = tv({
       class: [
         "ny:bg-transparent",
         "ny:hover:bg-transparent",
-        "ny:text-gray-400",
-        "ny:hover:text-gray-400",
+        "ny:text-[var(--nylas-btn-disabled-fg)]",
+        "ny:hover:text-[var(--nylas-btn-disabled-fg)]",
         "ny:hover:bg-none",
         "ny:cursor-not-allowed",
       ] satisfies NylasTw[],
@@ -103,7 +108,7 @@ export const button = tv({
     {
       color: "danger",
       variant: "link",
-      class: ["ny:hover:bg-red-50"],
+      class: ["ny:hover:bg-[var(--nylas-error-light)]"],
     },
   ],
 });
@@ -111,23 +116,25 @@ export const button = tv({
 export const input = tv({
   base: [
     "ny:border",
-    "ny:focus:outline-primary-500",
+    "ny:focus:outline-[var(--nylas-input-border-focus)]",
     "ny:block",
     "ny:w-full",
     "ny:rounded-lg",
     "ny:h-8",
-    "ny:border-gray-200",
+    "ny:border-[var(--nylas-input-border)]",
+    "ny:bg-[var(--nylas-input-bg)]",
     "ny:px-4",
-    "ny:text-gray-900",
+    "ny:text-[var(--nylas-input-fg)]",
     "ny:py-1",
     "ny:text-sm",
+    "ny:placeholder:text-[var(--nylas-input-placeholder)]",
   ] satisfies NylasTw[],
   variants: {
     disabled: {
       true: [
-        "ny:bg-gray-100",
-        "ny:border-gray-200",
-        "ny:text-gray-400",
+        "ny:bg-[var(--nylas-input-disabled-bg)]",
+        "ny:border-[var(--nylas-input-border)]",
+        "ny:text-[var(--nylas-input-disabled-fg)]",
         "ny:cursor-not-allowed",
       ] satisfies NylasTw[],
     },

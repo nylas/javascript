@@ -5,13 +5,49 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import type { CSSProperties } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { Copy, Search, FileText, Play } from "lucide-react";
 import { input, button } from "../lib/primitives";
 import { videoPlayerStore } from "../VideoPlayer/VideoPlayer";
+import type { NylasTheme } from "../lib/theme";
+import { themeToCSSVars } from "../lib/theme";
 
 dayjs.extend(utc); // needed as utc is a separate plugin
+
+/**
+ * Class names for Transcript component slots.
+ * Allows granular control over styling of internal elements.
+ */
+export interface TranscriptClassNames {
+  /** Root container class */
+  container?: string;
+  /** Toolbar container class */
+  toolbar?: string;
+  /** Toolbar controls wrapper class */
+  toolbarControls?: string;
+  /** Search input wrapper class */
+  searchInput?: string;
+  /** Transcript list/scrollable container class */
+  transcriptList?: string;
+  /** Individual transcript item class */
+  transcriptItem?: string;
+  /** Active transcript item class */
+  transcriptItemActive?: string;
+  /** Timestamp container class */
+  timestamp?: string;
+  /** Speaker name class */
+  speaker?: string;
+  /** Transcript text class */
+  text?: string;
+  /** Resume autoscroll button class */
+  resumeButton?: string;
+  /** Empty state container class */
+  emptyState?: string;
+  /** No results message class */
+  noResults?: string;
+}
 
 /**
  * Props for the Transcript component.
@@ -63,6 +99,44 @@ export interface TranscriptProps {
     text: string;
     highlight: string | null;
   }>;
+  /**
+   * Additional class name for the root container.
+   */
+  className?: string;
+  /**
+   * Class names for internal component slots.
+   * @example
+   * ```tsx
+   * <Transcript
+   *   classNames={{
+   *     container: 'my-custom-container',
+   *     transcriptItem: 'my-custom-item',
+   *     toolbar: 'my-custom-toolbar'
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: TranscriptClassNames;
+  /**
+   * Inline styles for the root container.
+   */
+  style?: CSSProperties;
+  /**
+   * Theme configuration for the transcript component.
+   * Can be used for dynamic theming without CSS variables.
+   * @example
+   * ```tsx
+   * <Transcript
+   *   theme={{
+   *     transcript: {
+   *       itemBgActive: '#f0f9ff',
+   *       timestamp: '#0ea5e9'
+   *     }
+   *   }}
+   * />
+   * ```
+   */
+  theme?: NylasTheme;
 }
 
 /**
@@ -100,7 +174,10 @@ const Text: React.FC<{
     <div>
       {parts.map((part, i) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <span key={i} className="ny:rounded ny:bg-yellow-200">
+          <span
+            key={i}
+            className="ny:rounded ny:bg-[var(--nylas-transcript-highlight-bg)] ny:text-[var(--nylas-transcript-highlight-fg)]"
+          >
             {part}
           </span>
         ) : (
@@ -117,6 +194,7 @@ interface ToolbarProps {
   setToolbarState: (state: ToolbarState) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  classNames?: TranscriptClassNames;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -125,6 +203,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   setToolbarState,
   searchTerm,
   setSearchTerm,
+  classNames,
 }) => {
   const handleClearSearch = useCallback(() => {
     setSearchTerm("");
@@ -149,28 +228,37 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   return (
-    <div className="ny:toolbar ny:border-b ny:border-gray-200 ny:px-3 ny:py-2 ny:rounded-t">
+    <div
+      className={`ny:toolbar ny:border-b ny:border-[var(--nylas-transcript-toolbar-border)] ny:px-3 ny:py-2 ny:rounded-t ny:bg-[var(--nylas-transcript-toolbar-bg)] ${classNames?.toolbar || ""}`}
+    >
       {/* Default State */}
       {toolbarState === "default" && (
-        <div className="ny:controls ny:flex ny:items-center ny:space-x-3">
+        <div
+          className={`ny:controls ny:flex ny:items-center ny:space-x-3 ${classNames?.toolbarControls || ""}`}
+        >
           <button
             onClick={() => setToolbarState("search")}
             className={button({ variant: "link" })}
           >
-            <Search height={16} className="ny:text-gray-600" />
+            <Search height={16} className="ny:text-[var(--nylas-muted-fg)]" />
             <span>Search</span>
           </button>
 
           <button onClick={handleCopy} className={button({ variant: "link" })}>
-            <Copy height={16} className="ny:text-gray-600" />
+            <Copy height={16} className="ny:text-[var(--nylas-muted-fg)]" />
             <span>Copy</span>
           </button>
         </div>
       )}
       {/* Search */}
       {toolbarState === "search" && (
-        <div className="ny:search ny:flex ny:items-center ny:w-full ny:space-x-2">
-          <Search height={16} className="ny:text-gray-500 ny:flex-shrink-0" />
+        <div
+          className={`ny:search ny:flex ny:items-center ny:w-full ny:space-x-2 ${classNames?.searchInput || ""}`}
+        >
+          <Search
+            height={16}
+            className="ny:text-[var(--nylas-muted-fg)] ny:flex-shrink-0"
+          />
           <input
             type="text"
             value={searchTerm}
@@ -202,6 +290,10 @@ const Transcript: React.FC<TranscriptProps> = ({
   resumeAutoscrollLabel = "Resume Autoscroll",
   onTimestampClick,
   transcriptComponent,
+  className,
+  classNames,
+  style,
+  theme,
 }) => {
   const { currentTime, setCurrentTime, isPlaying } = videoPlayerStore();
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
@@ -286,8 +378,16 @@ const Transcript: React.FC<TranscriptProps> = ({
   // Use the custom component if provided, otherwise use the default Text component
   const TextComponent = transcriptComponent || Text;
 
+  // Convert theme to inline styles if provided
+  const themeStyles = useMemo(() => themeToCSSVars(theme), [theme]);
+
+  const combinedStyles = { ...themeStyles, ...style };
+
   return (
-    <div className="ny:flex ny:flex-col ny:bg-white ny:border ny:border-gray-200 ny:rounded-lg ny:h-full ny:w-full ny:overflow-y-auto">
+    <div
+      className={`ny:flex ny:flex-col ny:bg-[var(--nylas-transcript-bg)] ny:border ny:border-[var(--nylas-transcript-border)] ny:rounded-lg ny:h-full ny:w-full ny:overflow-y-auto ${className || ""} ${classNames?.container || ""}`}
+      style={combinedStyles}
+    >
       {toolbar && (
         <Toolbar
           transcripts={processedTranscripts}
@@ -295,10 +395,11 @@ const Transcript: React.FC<TranscriptProps> = ({
           setToolbarState={setToolbarState}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          classNames={classNames}
         />
       )}
       <div
-        className="ny:transcripts ny:flex-grow ny:overflow-y-auto ny:p-3 ny:space-y-3 ny:relative"
+        className={`ny:transcripts ny:flex-grow ny:overflow-y-auto ny:p-3 ny:space-y-3 ny:relative ${classNames?.transcriptList || ""}`}
         ref={transcriptContainerRef}
         onWheel={() => setUserScrolledAway(true)}
         onTouchStart={() => setUserScrolledAway(true)}
@@ -310,13 +411,20 @@ const Transcript: React.FC<TranscriptProps> = ({
           (emptyState ? (
             emptyState
           ) : (
-            <div className="ny:no-results ny:flex ny:flex-col ny:items-center ny:justify-center ny:text-center ny:text-gray-400 ny:py-6 ny:h-full">
-              <FileText size={48} className="ny:mb-4 ny:text-gray-100" />
+            <div
+              className={`ny:no-results ny:flex ny:flex-col ny:items-center ny:justify-center ny:text-center ny:text-[var(--nylas-transcript-empty-text)] ny:py-6 ny:h-full ${classNames?.emptyState || ""}`}
+            >
+              <FileText
+                size={48}
+                className="ny:mb-4 ny:text-[var(--nylas-transcript-empty-icon)]"
+              />
               Transcript not available
             </div>
           ))}
         {!processedTranscripts.length && searchTerm && (
-          <div className="ny:no-results ny:text-center ny:text-gray-500 ny:py-6">
+          <div
+            className={`ny:no-results ny:text-center ny:text-[var(--nylas-text-secondary)] ny:py-6 ${classNames?.noResults || ""}`}
+          >
             No results found for "{searchTerm}".
           </div>
         )}
@@ -324,12 +432,18 @@ const Transcript: React.FC<TranscriptProps> = ({
           <div
             key={item.start + "-" + idx}
             ref={item.active ? activeItemRef : null}
-            className={`ny:transcripts-item ny:flex ny:gap-2 ny:p-2 ny:rounded ny:group ny:hover:bg-gray-50 ${item.active ? "ny:bg-blue-50" : ""}`}
+            className={`ny:transcripts-item ny:flex ny:gap-2 ny:p-2 ny:rounded ny:group ny:bg-[var(--nylas-transcript-item-bg)] ny:hover:bg-[var(--nylas-transcript-item-bg-hover)] ${
+              item.active
+                ? `ny:bg-[var(--nylas-transcript-item-bg-active)] ${classNames?.transcriptItemActive || ""}`
+                : ""
+            } ${classNames?.transcriptItem || ""}`}
             onMouseEnter={() => setFocusedIndex(idx)}
             onMouseLeave={() => setFocusedIndex(-1)}
           >
             {showTimestamps && item.ts && (
-              <div className="ny:time ny:w-16 ny:text-right ny:flex-shrink-0 ny:text-sm ny:text-blue-600 ny:relative">
+              <div
+                className={`ny:time ny:w-16 ny:text-right ny:flex-shrink-0 ny:text-sm ny:text-[var(--nylas-transcript-timestamp)] ny:relative ${classNames?.timestamp || ""}`}
+              >
                 <span
                   className={`ny:transition-opacity ny:duration-150 ny:ease-in-out ${focusedIndex === idx ? "ny:opacity-0" : "ny:opacity-100"}`}
                 >
@@ -350,7 +464,7 @@ const Transcript: React.FC<TranscriptProps> = ({
                           onTimestampClick(item.start / 1000 + 1);
                         }
                       }}
-                      className="ny:play-btn ny:h-4 ny:w-4 ny:text-gray-400 ny:hover:text-blue-600 ny:cursor-pointer"
+                      className="ny:play-btn ny:h-4 ny:w-4 ny:text-[var(--nylas-muted-fg)] ny:hover:text-[var(--nylas-transcript-timestamp)] ny:cursor-pointer"
                     />
                   )}
                   <Copy
@@ -358,18 +472,22 @@ const Transcript: React.FC<TranscriptProps> = ({
                       e.stopPropagation();
                       handleCopyTimestamp(item);
                     }}
-                    className="ny:copy-btn ny:h-4 ny:w-4 ny:text-gray-400 ny:hover:text-blue-600 ny:cursor-pointer"
+                    className="ny:copy-btn ny:h-4 ny:w-4 ny:text-[var(--nylas-muted-fg)] ny:hover:text-[var(--nylas-transcript-timestamp)] ny:cursor-pointer"
                   />
                 </span>
               </div>
             )}
             <div className="ny:message ny:flex-grow ny:m-0">
               {showSpeaker && (
-                <div className="ny:speaker ny:font-semibold ny:text-sm ny:text-gray-800 ny:mb-0.5">
+                <div
+                  className={`ny:speaker ny:font-semibold ny:text-sm ny:text-[var(--nylas-transcript-speaker)] ny:mb-0.5 ${classNames?.speaker || ""}`}
+                >
                   {item.speaker}
                 </div>
               )}
-              <div className="ny:text-sm ny:text-gray-700 ny:leading-relaxed">
+              <div
+                className={`ny:text-sm ny:text-[var(--nylas-transcript-text)] ny:leading-relaxed ${classNames?.text || ""}`}
+              >
                 <TextComponent
                   text={item.text}
                   highlight={searchTerm || null}
@@ -388,8 +506,7 @@ const Transcript: React.FC<TranscriptProps> = ({
               onClick={handleResumeAutoscroll}
               className={button({
                 variant: "primary",
-                class:
-                  "ny:sticky ny:bottom-4 ny:left-1/2  ny:-translate-x-1/2 ny:rounded-full",
+                class: `ny:sticky ny:bottom-4 ny:left-1/2  ny:-translate-x-1/2 ny:rounded-full ${classNames?.resumeButton || ""}`,
               })}
             >
               {resumeAutoscrollLabel}

@@ -1,14 +1,49 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import type { CSSProperties } from "react";
 import client from "../lib/http-client";
 import { Check } from "lucide-react";
 import { label, button, input } from "../lib/primitives";
 import { create } from "zustand";
 import { MeetingFilter, RecordingType, Calendar } from "../types";
+import type { NylasTheme } from "../lib/theme";
+import { themeToCSSVars } from "../lib/theme";
 import {
   MEETING_TYPES,
   RECORDING_TYPES,
   DEFAULT_RECORDING_TYPES,
 } from "../lib/constants";
+
+/**
+ * Class names for CalendarSync component slots.
+ * Allows granular control over styling of internal elements.
+ */
+export interface CalendarSyncClassNames {
+  /** Root container class */
+  container?: string;
+  /** Label class */
+  label?: string;
+  /** Input field class */
+  input?: string;
+  /** Meeting types section class */
+  meetingTypes?: string;
+  /** Individual meeting type button class */
+  meetingTypeButton?: string;
+  /** Advanced settings link class */
+  advancedSettings?: string;
+  /** Recording settings section class */
+  recordingSettings?: string;
+  /** Individual recording button class */
+  recordingButton?: string;
+  /** Actions container class */
+  actions?: string;
+  /** Save button class */
+  saveButton?: string;
+  /** Cancel button class */
+  cancelButton?: string;
+  /** Disable button class */
+  disableButton?: string;
+}
+
 /**
  * Props for the CalendarSync component.
  */
@@ -47,6 +82,31 @@ export interface CalendarSyncProps {
    * If true, hides the notetaker name input field.
    */
   hideNameInput?: boolean;
+  /**
+   * Additional class name for the root container.
+   */
+  className?: string;
+  /**
+   * Class names for internal component slots.
+   * @example
+   * ```tsx
+   * <CalendarSync
+   *   classNames={{
+   *     container: 'my-custom-container',
+   *     saveButton: 'my-custom-save-btn'
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: CalendarSyncClassNames;
+  /**
+   * Inline styles for the root container.
+   */
+  style?: CSSProperties;
+  /**
+   * Theme configuration for the calendar sync component.
+   */
+  theme?: NylasTheme;
 }
 
 /**
@@ -375,6 +435,10 @@ export function CalendarSync({
   onError,
   hideRecordingSettings = false,
   hideNameInput = false,
+  className,
+  classNames,
+  style,
+  theme,
 }: CalendarSyncProps) {
   const {
     calendar,
@@ -413,12 +477,23 @@ export function CalendarSync({
 
   const isDisabled = Object.keys(calendar?.notetaker || {}).length === 0;
 
+  // Convert theme to inline styles if provided
+  const themeStyles = useMemo(() => themeToCSSVars(theme), [theme]);
+
+  const combinedStyles = { ...themeStyles, ...style };
+
   return (
-    <div className="ny:flex ny:flex-col ny:gap-1">
+    <div
+      className={`ny:flex ny:flex-col ny:gap-1 ny:bg-[var(--nylas-calendar-bg)] ${className || ""} ${classNames?.container || ""}`}
+      style={combinedStyles}
+    >
       {/* Notetaker name */}
       {!hideNameInput && (
         <div className="ny:mb-2">
-          <label htmlFor="name" className={label()}>
+          <label
+            htmlFor="name"
+            className={`${label()} ${classNames?.label || ""}`}
+          >
             Notetaker name:
           </label>
           <input
@@ -429,24 +504,27 @@ export function CalendarSync({
               setName(e.target.value);
               setHasChanges(true);
             }}
-            className={input({ disabled: isLoading })}
+            className={`${input({ disabled: isLoading })} ${classNames?.input || ""}`}
             placeholder="Notetaker name"
           />
         </div>
       )}
       {/* Meeting types */}
-      <div className="ny:my-2">
-        <label htmlFor="name" className={label()}>
+      <div className={`ny:my-2 ${classNames?.meetingTypes || ""}`}>
+        <label
+          htmlFor="name"
+          className={`${label()} ${classNames?.label || ""}`}
+        >
           Meeting types:
         </label>
         <div className="ny:flex ny:gap-2 ny:flex-wrap">
           {MEETING_TYPES.map((type) => (
             <button
               type="button"
-              className={button({
+              className={`${button({
                 disabled: isLoading,
                 active: selectedFilters.includes(type.value),
-              })}
+              })} ${classNames?.meetingTypeButton || ""}`}
               key={type.value}
               onClick={() => toggleMeetingFilter(type.value)}
             >
@@ -464,7 +542,7 @@ export function CalendarSync({
       {/* Meeting Settings */}
       {!hideRecordingSettings && !advancedSettings && (
         <div
-          className="ny:hover:text-primary-500 ny:text-sm ny:text-gray-500 ny:mb-2 ny:cursor-pointer"
+          className={`ny:hover:text-[var(--nylas-calendar-advanced-link-hover)] ny:text-sm ny:text-[var(--nylas-calendar-advanced-link)] ny:mb-2 ny:cursor-pointer ${classNames?.advancedSettings || ""}`}
           onClick={() => setAdvancedSettings(true)}
           role="button"
           tabIndex={0}
@@ -473,8 +551,11 @@ export function CalendarSync({
         </div>
       )}
       {!hideRecordingSettings && advancedSettings && (
-        <div className="ny:my-2">
-          <label htmlFor="name" className={label()}>
+        <div className={`ny:my-2 ${classNames?.recordingSettings || ""}`}>
+          <label
+            htmlFor="name"
+            className={`${label()} ${classNames?.label || ""}`}
+          >
             Recording settings:
           </label>
           <div className="ny:flex ny:gap-2 ny:flex-wrap">
@@ -484,10 +565,10 @@ export function CalendarSync({
                 <button
                   key={it.value}
                   type="button"
-                  className={button({
+                  className={`${button({
                     disabled: isLoading,
                     active: selectedRecordingTypes.includes(it.value),
-                  })}
+                  })} ${classNames?.recordingButton || ""}`}
                   onClick={() => toggleRecordingType(it.value)}
                 >
                   <Icon
@@ -502,26 +583,28 @@ export function CalendarSync({
         </div>
       )}
       {/* Actions */}
-      <div className="ny:flex ny:items-center ny:justify-between">
+      <div
+        className={`ny:flex ny:items-center ny:justify-between ${classNames?.actions || ""}`}
+      >
         <div className="ny:flex ny:gap-2 ny:mt-2">
           <button
             type="button"
             onClick={() => handleSave(calendarId, grantId, onUpdate, onError)}
             disabled={isLoading || !hasChanges || !name}
-            className={button({
+            className={`${button({
               variant: "primary",
               disabled: isLoading || !hasChanges || !name,
-            })}
+            })} ${classNames?.saveButton || ""}`}
           >
             {hasChanges ? "Save changes" : "Changes saved"}
           </button>
           {hasChanges && (
             <button
               type="button"
-              className={button({
+              className={`${button({
                 variant: "link",
                 disabled: !hasChanges,
-              })}
+              })} ${classNames?.cancelButton || ""}`}
               onClick={() => handleCancel(notetakerName, onCancel)}
             >
               Cancel
@@ -532,11 +615,11 @@ export function CalendarSync({
           {!isDisabled && (
             <button
               type="button"
-              className={button({
+              className={`${button({
                 variant: "link",
                 color: "danger",
                 disabled: isLoading,
-              })}
+              })} ${classNames?.disableButton || ""}`}
               onClick={() =>
                 handleDisable(
                   calendarId,

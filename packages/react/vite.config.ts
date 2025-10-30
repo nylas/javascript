@@ -6,13 +6,14 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), dts({ insertTypesEntry: true })],
+  plugins: [react(), dts({ insertTypesEntry: true }), tailwindcss()],
   build: {
     lib: {
       entry: {
         index: resolve(__dirname, "src/index.ts"),
         connect: resolve(__dirname, "src/connect.ts"),
         elements: resolve(__dirname, "src/elements.ts"),
+        notetaker: resolve(__dirname, "src/notetaker.ts"),
         utils: resolve(__dirname, "src/utils.ts"),
       },
       formats: ["es", "cjs"],

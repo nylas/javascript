@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type {
   Provider,
@@ -8,6 +8,15 @@ import type {
   CodeExchangeMethod,
 } from "@nylas/connect";
 import { useNylasConnect } from "./useNylasConnect";
+import type { NylasTheme } from "../notetaker/lib/theme";
+
+/**
+ * Class names for NylasConnectButton component slots.
+ */
+export interface NylasConnectButtonClassNames {
+  /** Button element class */
+  button?: string;
+}
 
 export type NylasConnectButtonProps = {
   clientId: string;
@@ -41,6 +50,25 @@ export type NylasConnectButtonProps = {
       string
     >
   >;
+
+  /**
+   * Class names for internal component slots.
+   * @example
+   * ```tsx
+   * <NylasConnectButton
+   *   classNames={{
+   *     button: 'my-custom-button'
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: NylasConnectButtonClassNames;
+
+  /**
+   * Theme configuration for the connect button.
+   * Can be used for dynamic theming without CSS variables.
+   */
+  theme?: NylasTheme;
 
   // Advanced configuration
   /**
@@ -86,6 +114,8 @@ export function NylasConnectButton({
   size = "md",
   unstyled = false,
   cssVars,
+  classNames,
+  theme,
 
   // advanced config
   identityProviderToken,
@@ -149,15 +179,50 @@ export function NylasConnectButton({
     onError,
   ]);
 
+  // Convert theme to inline styles if provided
+  const themeStyles: CSSProperties = useMemo(() => {
+    if (!theme) {
+      return {};
+    }
+    const styles: Record<string, string> = {};
+    if (theme.button?.bg) {
+      styles["--nylas-btn-bg"] = theme.button.bg;
+    }
+    if (theme.button?.fg) {
+      styles["--nylas-btn-fg"] = theme.button.fg;
+    }
+    if (theme.button?.border) {
+      styles["--nylas-btn-border"] = theme.button.border;
+    }
+    if (theme.button?.bgHover) {
+      styles["--nylas-btn-bg-hover"] = theme.button.bgHover;
+    }
+    if (theme.button?.primaryBg) {
+      styles["--nylas-btn-primary-bg"] = theme.button.primaryBg;
+    }
+    if (theme.button?.primaryFg) {
+      styles["--nylas-btn-primary-fg"] = theme.button.primaryFg;
+    }
+    return styles as CSSProperties;
+  }, [theme]);
+
   const rootClassName = unstyled
-    ? className
-    : ["nylas-btn", `nylas-btn--${variant}`, `nylas-btn--${size}`, className]
+    ? `${className || ""} ${classNames?.button || ""}`
+    : [
+        "nylas-btn",
+        `nylas-btn--${variant}`,
+        `nylas-btn--${size}`,
+        className,
+        classNames?.button,
+      ]
         .filter(Boolean)
         .join(" ");
 
-  const styleWithVars: CSSProperties | undefined = cssVars
-    ? { ...(cssVars as CSSProperties), ...style }
-    : style;
+  const styleWithVars: CSSProperties | undefined = {
+    ...(cssVars as CSSProperties),
+    ...themeStyles,
+    ...style,
+  };
 
   return (
     <button
