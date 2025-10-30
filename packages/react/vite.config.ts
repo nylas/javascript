@@ -29,10 +29,6 @@ export default defineConfig({
         "react-dom/client",
         "@nylas/core",
         "@nylas/connect",
-        "@nylas/web-elements",
-        "@nylas/web-elements/components",
-        "@nylas/web-elements/loader",
-        /^@nylas\/web-elements\/dist\/components\//,
         "@stencil/react-output-target/runtime",
       ],
       output: {
