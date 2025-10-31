@@ -1,0 +1,113 @@
+{
+  "name": "@nylas/react",
+  "version": "2.2.4",
+  "description": "React components and hooks for Nylas API integration",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "pnpm --workspace-root prettier --write packages/react/",
+    "format:check": "pnpm --workspace-root prettier --check packages/react/",
+    "lint": "oxlint --fix . && exit 0",
+    "lint:check": "oxlint .",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch --emptyOutDir=false",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "coverage": "vitest run --coverage",
+    "docs": "typedoc",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nylas/nylas.git"
+  },
+  "keywords": [
+    "nylas",
+    "react",
+    "components",
+    "hooks",
+    "email",
+    "calendar",
+    "contacts",
+    "oauth2"
+  ],
+  "author": "Nylas Inc.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.7.1",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts",
+      "style": "./dist/style.css"
+    },
+    "./connect": {
+      "import": "./dist/es/connect.js",
+      "require": "./dist/cjs/connect.js",
+      "types": "./dist/connect.d.ts"
+    },
+    "./elements": {
+      "import": "./dist/es/elements.js",
+      "require": "./dist/cjs/elements.js",
+      "types": "./dist/elements.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/es/utils.js",
+      "require": "./dist/cjs/utils.js",
+      "types": "./dist/utils.d.ts"
+    },
+    "./style.css": {
+      "default": "./dist/style.css"
+    }
+  },
+  "main": "dist/cjs/index.js",
+  "style": "./dist/style.css",
+  "module": "dist/es/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@nylas/connect": "workspace:^",
+    "@nylas/core": "^1.2.0",
+    "@nylas/web-elements": "^2.2.4",
+    "@stencil/react-output-target": "^1.2.0",
+    "axios": "^1.7.7",
+    "dayjs": "1.11.7",
+    "lucide-react": "^0.453.0",
+    "tailwind-variants": "^1.0.0",
+    "zustand": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.3",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^20.11.13",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "@vitest/coverage-v8": "^2.1.9",
+    "jsdom": "^26.0.0",
+    "markdown-table": "^3.0.4",
+    "tailwindcss": "^4.1.7",
+    "tslib": "^2.6.2",
+    "typedoc": "^0.28.3",
+    "typedoc-plugin-markdown": "^4.6.3",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.21",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^2.1.8"
+  }
+}

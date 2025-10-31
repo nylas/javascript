@@ -19,7 +19,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:watch": "vite build --watch",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
@@ -41,6 +40,10 @@
     "popup",
     "inline"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nylas/nylas.git"
+  },
   "author": "Nylas Inc.",
   "license": "MIT",
   "publishConfig": {
@@ -50,7 +53,7 @@
   "devDependencies": {
     "@types/node": "^20.11.13",
     "@vitest/coverage-v8": "^2.1.9",
-    "happy-dom": "^15.10.2",
+    "jsdom": "^26.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.4.21",
     "vite-plugin-dts": "^3.7.0",

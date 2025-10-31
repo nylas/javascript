@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "jsx": "react",
     "types": ["vitest/globals"],
 
     // Relaxed strictness
@@ -25,6 +26,6 @@
     "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "vitest.setup.ts"],
   "exclude": ["node_modules", "dist"]
 }
