@@ -1,5 +1,21 @@
 # @nylas/react
 
+## 3.0.0
+
+### Major Changes
+
+- 0ba7885: Add `@nylas/react` to the monorepo with initial components, hooks, and build setup.
+  - Introduces React utilities for integrating with the Nylas platform
+  - Includes basic docs and distribution configuration
+
+  Cosmetic updates to `@nylas/connect`.
+  - Style and documentation polish; no functional changes
+
+### Patch Changes
+
+- Updated dependencies [0ba7885]
+  - @nylas/connect@1.2.1
+
 ## 2.2.4
 
 ### Patch Changes
@@ -129,7 +145,6 @@
   ## 🚨 BREAKING CHANGES 🚨
 
   ### Prop Changes/Additions
-
   - The `enableEventTypes` property controls which event types are enabled in the Scheduler editor.
   - Default value:
 
@@ -146,12 +161,10 @@
   ```
 
   ### UI Changes
-
   - The scheduler editor body height has increased from 610px to 900px to accommodate the calendar view for Group Events
   - Clicking "Create new" now opens a type selection screen where users can choose the scheduling configuration they want to create
 
   ### Configuration and Set-up Changes
-
   - The previous approach of hardcoding a single scheduling method using the availability_method (e.g., 'max-availability', 'collective', 'max-fairness') is no longer supported.
 
   Before:
@@ -186,7 +199,6 @@
   ```
 
   `enableEventTypes` controls which event types are enabled.
-
   - By default, all event types are enabled and users will see a selection screen when creating a new event.
   - You can disable specific event types by setting them to `false`.
   - At least one event type must remain enabled at all times.
@@ -208,7 +220,6 @@
   ### New Event Types
 
   The scheduler components now emit the following new events for group event operations:
-
   - `groupEventCreateTriggered`
   - `groupEventUpdateTriggered`
   - `groupEventDeleteTriggered`
@@ -547,12 +558,10 @@
 ### Patch Changes
 
 - [#367](https://github.com/nylas/nylas/pull/367) [`eed1e4c`](https://github.com/nylas/nylas/commit/eed1e4cc01c5d12b5c88e94d69d306d5119346f5) Thanks [@pooja169usp](https://github.com/pooja169usp)!
-
   - Fixed default selected calendar not selected when creating a config using MS account.
   - Fixed the issue with booking an event where the default selected value in the dropdown was not sent until changed.
 
 - [#368](https://github.com/nylas/nylas/pull/368) [`eed1e4c`](https://github.com/nylas/nylas/commit/eed1e4cc01c5d12b5c88e94d69d306d5119346f5) Thanks [@pooja169usp](https://github.com/pooja169usp)!
-
   - Updated the Scheduling component to fetch availability only if the ui settings request passes. This prevents the additional API request if the config is invalid.
   - Appended the guest info, additional fields and timeslot to the bokedEventInfo event
 
@@ -568,7 +577,6 @@
 - [#357](https://github.com/nylas/nylas/pull/357) [`ef9faff`](https://github.com/nylas/nylas/commit/ef9faffb27c33830ce4e59b7bbd324e73b913fef) Thanks [@pooja169usp](https://github.com/pooja169usp)! - Bundle a separate folder dist/cdn for CDN usage. This improves the loading time by including all the necessary dependencies required for a component to load (Each component is imported individually).
 
 - [#364](https://github.com/nylas/nylas/pull/364) [`8f84ba8`](https://github.com/nylas/nylas/commit/8f84ba8d34513d4ccd0a9725913cbc356a765a02) Thanks [@pooja169usp](https://github.com/pooja169usp)!
-
   - Modified how the Editor manages manual confirmations:
   - If `organizer_confirmation_url` is not set by developers, the `<nylas-booking-confirmation-type>` component will no longer appear in the editor
   - Added validation for configuration creation to ensure that if developers override `booking_type` to "organizer-confirmation", they must also set `organizer_confirmation_url`, otherwise a validation error will be triggered.
