@@ -36,6 +36,7 @@ import {
   cleanUrl,
   isConnectCallback,
 } from "./utils/redirect";
+import pkg from "../package.json";
 
 /**
  * Modern Nylas authentication client
@@ -55,6 +56,12 @@ export class NylasConnect {
     processed: new Set(),
     lastCleanup: Date.now(),
   };
+
+  // Header constants
+  private static readonly NYLAS_CONNECT_VERSION: string = pkg.version;
+  private static readonly NYLAS_CONNECT_HEADER = "x-nylas-connect" as const;
+  private static readonly NYLAS_APPLICATION_ID_HEADER =
+    "x-nylas-application-id" as const;
 
   constructor(config: ConnectConfig = {}) {
     // Resolve configuration with environment variables and defaults
@@ -719,7 +726,7 @@ export class NylasConnect {
     }
 
     try {
-      const response = await fetch(
+      const response = await this.apiClient(
         `${this.config.apiUrl}/connect/tokeninfo?access_token=${encodeURIComponent(accessToken)}`,
       );
 
@@ -1022,13 +1029,16 @@ export class NylasConnect {
     }
 
     try {
-      const response = await fetch(`${this.config.apiUrl}/connect/token`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await this.apiClient(
+        `${this.config.apiUrl}/connect/token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -1195,5 +1205,30 @@ export class NylasConnect {
   }
   private authStateKey(): string {
     return `nylas_auth_state_${this.config.clientId}`;
+  }
+
+  /**
+   * Internal API client to ensure common headers are sent with every request
+   */
+  private apiClient(
+    input: RequestInfo | URL,
+    init: RequestInit = {},
+  ): Promise<Response> {
+    const connectHeader = NylasConnect.NYLAS_CONNECT_HEADER;
+    const connectVersion = NylasConnect.NYLAS_CONNECT_VERSION;
+    const appIdHeader = NylasConnect.NYLAS_APPLICATION_ID_HEADER;
+    const appId = this.config.clientId;
+
+    const existingHeaders =
+      (init.headers as Record<string, string> | undefined) || {};
+
+    return fetch(input as RequestInfo, {
+      ...init,
+      headers: {
+        ...existingHeaders,
+        [connectHeader]: connectVersion,
+        [appIdHeader]: appId,
+      },
+    });
   }
 }
