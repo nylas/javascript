@@ -60,6 +60,8 @@ export class NylasConnect {
   // Header constants
   private static readonly NYLAS_CONNECT_VERSION: string = pkg.version;
   private static readonly NYLAS_CONNECT_HEADER = "x-nylas-connect" as const;
+  private static readonly NYLAS_APPLICATION_ID_HEADER =
+    "x-nylas-application-id" as const;
 
   constructor(config: ConnectConfig = {}) {
     // Resolve configuration with environment variables and defaults
@@ -1212,15 +1214,21 @@ export class NylasConnect {
     input: RequestInfo | URL,
     init: RequestInit = {},
   ): Promise<Response> {
-    const headerName = NylasConnect.NYLAS_CONNECT_HEADER;
-    const headerValue = NylasConnect.NYLAS_CONNECT_VERSION;
+    const connectHeader = NylasConnect.NYLAS_CONNECT_HEADER;
+    const connectVersion = NylasConnect.NYLAS_CONNECT_VERSION;
+    const appIdHeader = NylasConnect.NYLAS_APPLICATION_ID_HEADER;
+    const appId = this.config.clientId;
 
     const existingHeaders =
       (init.headers as Record<string, string> | undefined) || {};
 
     return fetch(input as RequestInfo, {
       ...init,
-      headers: { ...existingHeaders, [headerName]: headerValue },
+      headers: {
+        ...existingHeaders,
+        [connectHeader]: connectVersion,
+        [appIdHeader]: appId,
+      },
     });
   }
 }
