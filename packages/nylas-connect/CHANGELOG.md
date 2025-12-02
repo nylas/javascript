@@ -1,5 +1,16 @@
 # @nylas/connect
 
+## 1.2.1
+
+### Patch Changes
+
+- 0ba7885: Add `@nylas/react` to the monorepo with initial components, hooks, and build setup.
+  - Introduces React utilities for integrating with the Nylas platform
+  - Includes basic docs and distribution configuration
+
+  Cosmetic updates to `@nylas/connect`.
+  - Style and documentation polish; no functional changes
+
 ## 1.2.0
 
 ### Minor Changes
