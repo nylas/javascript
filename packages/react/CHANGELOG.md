@@ -1,5 +1,13 @@
 # @nylas/react
 
+## 3.0.1
+
+### Patch Changes
+
+- 86253d9: Fix publishing process by removing prepublishOnly hooks that caused TypeScript compilation errors during changeset publish
+- Updated dependencies [86253d9]
+  - @nylas/connect@1.2.2
+
 ## 3.0.0
 
 ### Major Changes
