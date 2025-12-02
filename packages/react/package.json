@@ -16,8 +16,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "coverage": "vitest run --coverage",
-    "docs": "typedoc",
-    "prepublishOnly": "pnpm run clean && pnpm run build"
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
