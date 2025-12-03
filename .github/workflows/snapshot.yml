@@ -33,7 +33,6 @@ run-name: "Publishing ${{ inputs.snapshot_tag }} for ${{ inputs.packages }} to $
 
 env:
     NODE_VERSION: ${{ vars.NODE_VERSION }}
-    PNPM_VERSION: ${{ vars.PNPM_VERSION }}
     IS_CI: true
 
 permissions:
@@ -54,7 +53,6 @@ jobs:
             # Setup Node.js and pnpm
             - uses: pnpm/action-setup@v4
               with:
-                  version: ${{ env.PNPM_VERSION }}
                   run_install: false
 
             - name: Install Node.js

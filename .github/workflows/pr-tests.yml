@@ -12,7 +12,6 @@ concurrency:
 
 env:
   NODE_VERSION: ${{ vars.NODE_VERSION }}
-  PNPM_VERSION: ${{ vars.PNPM_VERSION }}
 
 jobs:
   # Code quality checks (fast, no build required)
@@ -34,7 +33,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
           run_install: false
 
       - name: Get pnpm store directory
@@ -81,7 +79,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
           run_install: false
 
       - name: Get pnpm store directory
