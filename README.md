@@ -25,6 +25,22 @@ Modern, secure OAuth connection library for Nylas APIs.
 npm install @nylas/connect
 ```
 
+### [`@nylas/react`](./packages/react/)
+
+React components and hooks for Nylas API integration.
+
+- **TypeScript-first** with full type safety
+- Works with React 18 and 19
+- Pre-built UI components for email, calendar, and contacts
+- OAuth connection hooks and utilities
+- Modular exports for tree-shaking
+
+[**📖 Documentation →**](./packages/react/README.md)
+
+```bash
+npm install @nylas/react
+```
+
 ---
 
 ## 🛠 Development

@@ -41,8 +41,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nylas/nylas.git"
+    "url": "git+https://github.com/nylas/javascript.git"
   },
+  "bugs": {
+    "url": "https://github.com/nylas/javascript/issues"
+  },
+  "homepage": "https://github.com/nylas/javascript#readme",
   "author": "Nylas Inc.",
   "license": "MIT",
   "publishConfig": {

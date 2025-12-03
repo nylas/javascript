@@ -9,6 +9,9 @@ on:
 # Prevent multiple releases from running at the same time
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  NODE_VERSION: ${{ vars.NODE_VERSION }}
+
 jobs:
   release:
     name: Release
@@ -31,13 +34,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ vars.NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: "https://registry.npmjs.org"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: "10.6.3"
           run_install: false
 
       - name: Get pnpm store directory
