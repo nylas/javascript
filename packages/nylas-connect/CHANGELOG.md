@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 1.2.3
+
+### Patch Changes
+
+- 948428e: Updated the x-nylas-public-application-id header.
+
 ## 1.2.2
 
 ### Patch Changes
