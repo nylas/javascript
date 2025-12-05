@@ -61,7 +61,7 @@ export class NylasConnect {
   private static readonly NYLAS_CONNECT_VERSION: string = pkg.version;
   private static readonly NYLAS_CONNECT_HEADER = "x-nylas-connect" as const;
   private static readonly NYLAS_APPLICATION_ID_HEADER =
-    "x-nylas-public-application-id" as const;
+    "x-nylas-application-public-id" as const;
 
   constructor(config: ConnectConfig = {}) {
     // Resolve configuration with environment variables and defaults
