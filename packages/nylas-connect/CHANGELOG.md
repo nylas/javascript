@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 1.2.4
+
+### Patch Changes
+
+- 3b179b4: Changed the header name from `x-nylas-application-public-id` to improve API consistency.
+
 ## 1.2.3
 
 ### Patch Changes
