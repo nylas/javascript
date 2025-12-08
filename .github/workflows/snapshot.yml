@@ -68,7 +68,7 @@ jobs:
 
             # Create snapshot version
             - name: Create snapshot version
-              run: pnpm changeset version --snapshot ${{ inputs.snapshot_tag }} && git add --all
+              run: pnpm changeset version --snapshot ${{ inputs.snapshot_tag }} && pnpm -r generate:version && git add --all
               env:
                   GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
