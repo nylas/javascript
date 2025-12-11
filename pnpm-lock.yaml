@@ -57,8 +57,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(@stencil/core@4.36.3)
       '@nylas/web-elements':
-        specifier: 0.0.0-canary-20251208215521
-        version: 0.0.0-canary-20251208215521(rollup@4.50.1)
+        specifier: 2.3.0
+        version: 2.3.0(rollup@4.50.1)
       '@stencil/react-output-target':
         specifier: ^1.2.0
         version: 1.2.0(@stencil/core@4.36.3)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -663,17 +663,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@nylas/core@0.0.0-test-20250327161320':
-    resolution: {integrity: sha512-MMdO/11JD3dFYmPwXLA/Sq1itEzKBkvNncWW2KcTULNOYDBt40vhmBsYRzRn0kiRNV49shl8HS0M/LvrRdCbEw==}
-
   '@nylas/core@1.2.0':
     resolution: {integrity: sha512-eUlxzbeLSdGNx5t51cFxp+oD954MuPxFmL2a0IgqYGQ/TvT2RoIgTHiUhZIXWRZTSBrlNNZq+Bxklk3Z7nPs8g==}
+
+  '@nylas/core@1.3.0':
+    resolution: {integrity: sha512-5wi7TuI3WnNdcVsSLqSIIdI5uK3MwmuTHv7jvbDT0Bw8tCk71QSz5n6VtdNs9PlDsrsGlQTBBF5ijsVQ2yk+yg==}
 
   '@nylas/identity@3.1.0':
     resolution: {integrity: sha512-EBW17UBAvsj1cT+BEbawdce9Uy04IsElr8hJJRB3lf8Aod/icdn0mxWdWCyCNrjW6fhRwz0Cv3Sh88DbTbC7yA==}
 
-  '@nylas/web-elements@0.0.0-canary-20251208215521':
-    resolution: {integrity: sha512-3Db+ytS/Q6tecO4AXJsPvVcV7dt8jZRDKLDDvHXPagLXx/m0HIZWDl4I7mmCBgeFkrAoXCWpBlNKxDmQnu/fqQ==}
+  '@nylas/web-elements@2.3.0':
+    resolution: {integrity: sha512-4Ye4tQQeU5+al4bCL1MoCsyiU4HzLMHsIlJgbwaGiq4Sm/QoorN2BhvpQ4hv8V2nStiPQHP5bbKN36vabx5MgQ==}
 
   '@oxlint/darwin-arm64@1.16.0':
     resolution: {integrity: sha512-t9sBjbcG15Jgwgw2wY+rtfKEazdkKM/YhcdyjmGYeSjBXaczLfp/gZe03taC2qUHK+t6cxSYNkOLXRLWxaf3tw==}
@@ -3592,14 +3592,14 @@ snapshots:
   '@nx/nx-win32-x64-msvc@21.5.2':
     optional: true
 
-  '@nylas/core@0.0.0-test-20250327161320(@stencil/core@4.36.3)':
+  '@nylas/core@1.2.0(@stencil/core@4.36.3)':
     dependencies:
       '@stencil/store': 2.2.0(@stencil/core@4.36.3)
       dexie: 3.2.7
     transitivePeerDependencies:
       - '@stencil/core'
 
-  '@nylas/core@1.2.0(@stencil/core@4.36.3)':
+  '@nylas/core@1.3.0(@stencil/core@4.36.3)':
     dependencies:
       '@stencil/store': 2.2.0(@stencil/core@4.36.3)
       dexie: 3.2.7
@@ -3614,14 +3614,14 @@ snapshots:
       react: 18.2.0
       uuid: 8.3.2
 
-  '@nylas/web-elements@0.0.0-canary-20251208215521(rollup@4.50.1)':
+  '@nylas/web-elements@2.3.0(rollup@4.50.1)':
     dependencies:
       '@fullcalendar/core': 6.1.8
       '@fullcalendar/daygrid': 6.1.8(@fullcalendar/core@6.1.8)
       '@fullcalendar/interaction': 6.1.8(@fullcalendar/core@6.1.8)
       '@fullcalendar/rrule': 6.1.8(@fullcalendar/core@6.1.8)(rrule@2.8.1)
       '@fullcalendar/timegrid': 6.1.8(@fullcalendar/core@6.1.8)
-      '@nylas/core': 0.0.0-test-20250327161320(@stencil/core@4.36.3)
+      '@nylas/core': 1.3.0(@stencil/core@4.36.3)
       '@nylas/identity': 3.1.0
       '@rollup/plugin-replace': 6.0.2(rollup@4.50.1)
       '@sentry/browser': 8.55.0
