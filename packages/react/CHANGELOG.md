@@ -1,5 +1,11 @@
 # @nylas/react
 
+## 3.1.0
+
+### Minor Changes
+
+- f315e2b: Updating to the latest version of nylas-web-elements.
+
 ## 3.0.1
 
 ### Patch Changes
