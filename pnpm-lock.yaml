@@ -55,13 +55,13 @@ importers:
         version: link:../nylas-connect
       '@nylas/core':
         specifier: ^1.2.0
-        version: 1.2.0(@stencil/core@4.37.1)
+        version: 1.2.0(@stencil/core@4.36.3)
       '@nylas/web-elements':
-        specifier: ^2.2.4
-        version: 2.2.4(rollup@4.50.1)
+        specifier: 2.3.0
+        version: 2.3.0(rollup@4.50.1)
       '@stencil/react-output-target':
         specifier: ^1.2.0
-        version: 1.2.0(@stencil/core@4.37.1)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 1.2.0(@stencil/core@4.36.3)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       axios:
         specifier: ^1.7.7
         version: 1.12.2
@@ -666,11 +666,14 @@ packages:
   '@nylas/core@1.2.0':
     resolution: {integrity: sha512-eUlxzbeLSdGNx5t51cFxp+oD954MuPxFmL2a0IgqYGQ/TvT2RoIgTHiUhZIXWRZTSBrlNNZq+Bxklk3Z7nPs8g==}
 
+  '@nylas/core@1.3.0':
+    resolution: {integrity: sha512-5wi7TuI3WnNdcVsSLqSIIdI5uK3MwmuTHv7jvbDT0Bw8tCk71QSz5n6VtdNs9PlDsrsGlQTBBF5ijsVQ2yk+yg==}
+
   '@nylas/identity@3.1.0':
     resolution: {integrity: sha512-EBW17UBAvsj1cT+BEbawdce9Uy04IsElr8hJJRB3lf8Aod/icdn0mxWdWCyCNrjW6fhRwz0Cv3Sh88DbTbC7yA==}
 
-  '@nylas/web-elements@2.2.4':
-    resolution: {integrity: sha512-EVAF2xQ3Q2OYc4fDl49oZe8lgNIi7P5fF0EQ/RiKLWHGd2gtMyc4YcZBNHMH9hYpxVvxI5BzdRZax76xMCJq7Q==}
+  '@nylas/web-elements@2.3.0':
+    resolution: {integrity: sha512-4Ye4tQQeU5+al4bCL1MoCsyiU4HzLMHsIlJgbwaGiq4Sm/QoorN2BhvpQ4hv8V2nStiPQHP5bbKN36vabx5MgQ==}
 
   '@oxlint/darwin-arm64@1.16.0':
     resolution: {integrity: sha512-t9sBjbcG15Jgwgw2wY+rtfKEazdkKM/YhcdyjmGYeSjBXaczLfp/gZe03taC2qUHK+t6cxSYNkOLXRLWxaf3tw==}
@@ -946,8 +949,8 @@ packages:
   '@sinclair/typebox@0.34.41':
     resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
 
-  '@stencil/core@4.37.1':
-    resolution: {integrity: sha512-s4ZroxdYc2HU0b7V3n59RVtMKdNlTvWWBN8KofaP64eCzvg1qRh6SKMet7MJ069F1lx/FxDvsYfOv7pZRiMWmQ==}
+  '@stencil/core@4.36.3':
+    resolution: {integrity: sha512-C9DOaAjm+hSYRuVoUuYWG/lrYT8+4DG0AL0m1Ea9+G5v2Y6ApVpNJLbXvFlRZIdDMGecH86s6v0Gp39uockLxg==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -3589,9 +3592,16 @@ snapshots:
   '@nx/nx-win32-x64-msvc@21.5.2':
     optional: true
 
-  '@nylas/core@1.2.0(@stencil/core@4.37.1)':
+  '@nylas/core@1.2.0(@stencil/core@4.36.3)':
     dependencies:
-      '@stencil/store': 2.2.0(@stencil/core@4.37.1)
+      '@stencil/store': 2.2.0(@stencil/core@4.36.3)
+      dexie: 3.2.7
+    transitivePeerDependencies:
+      - '@stencil/core'
+
+  '@nylas/core@1.3.0(@stencil/core@4.36.3)':
+    dependencies:
+      '@stencil/store': 2.2.0(@stencil/core@4.36.3)
       dexie: 3.2.7
     transitivePeerDependencies:
       - '@stencil/core'
@@ -3604,18 +3614,18 @@ snapshots:
       react: 18.2.0
       uuid: 8.3.2
 
-  '@nylas/web-elements@2.2.4(rollup@4.50.1)':
+  '@nylas/web-elements@2.3.0(rollup@4.50.1)':
     dependencies:
       '@fullcalendar/core': 6.1.8
       '@fullcalendar/daygrid': 6.1.8(@fullcalendar/core@6.1.8)
       '@fullcalendar/interaction': 6.1.8(@fullcalendar/core@6.1.8)
       '@fullcalendar/rrule': 6.1.8(@fullcalendar/core@6.1.8)(rrule@2.8.1)
       '@fullcalendar/timegrid': 6.1.8(@fullcalendar/core@6.1.8)
-      '@nylas/core': 1.2.0(@stencil/core@4.37.1)
+      '@nylas/core': 1.3.0(@stencil/core@4.36.3)
       '@nylas/identity': 3.1.0
       '@rollup/plugin-replace': 6.0.2(rollup@4.50.1)
       '@sentry/browser': 8.55.0
-      '@stencil/core': 4.37.1
+      '@stencil/core': 4.36.3
       d3-time: 3.1.0
       dayjs: 1.11.7
       i18next: 23.16.8
@@ -3838,7 +3848,7 @@ snapshots:
 
   '@sinclair/typebox@0.34.41': {}
 
-  '@stencil/core@4.37.1':
+  '@stencil/core@4.36.3':
     optionalDependencies:
       '@rollup/rollup-darwin-arm64': 4.34.9
       '@rollup/rollup-darwin-x64': 4.34.9
@@ -3849,10 +3859,10 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.34.9
       '@rollup/rollup-win32-x64-msvc': 4.34.9
 
-  '@stencil/react-output-target@1.2.0(@stencil/core@4.37.1)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@stencil/react-output-target@1.2.0(@stencil/core@4.36.3)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@lit/react': 1.0.8(@types/react@19.2.0)
-      '@stencil/core': 4.37.1
+      '@stencil/core': 4.36.3
       html-react-parser: 5.2.6(@types/react@19.2.0)(react@19.2.0)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
@@ -3861,9 +3871,9 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@stencil/store@2.2.0(@stencil/core@4.37.1)':
+  '@stencil/store@2.2.0(@stencil/core@4.36.3)':
     dependencies:
-      '@stencil/core': 4.37.1
+      '@stencil/core': 4.36.3
 
   '@swc/core-darwin-arm64@1.13.5':
     optional: true
