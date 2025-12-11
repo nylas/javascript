@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 1.2.5
+
+### Patch Changes
+
+- 93bc4db: Update release workflow to use npm trusted publishing with OIDC authentication
+
 ## 1.2.4
 
 ### Patch Changes
