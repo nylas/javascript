@@ -18,9 +18,9 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "../../node_modules/.bin/tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "../../node_modules/.bin/tsc --noEmit",
     "format": "pnpm --workspace-root prettier --write packages/nylas-connect/",
     "format:check": "pnpm --workspace-root prettier --check packages/nylas-connect/",
     "lint": "oxlint --fix . && exit 0",

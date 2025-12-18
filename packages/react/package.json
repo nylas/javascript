@@ -4,7 +4,7 @@
   "description": "React components and hooks for Nylas API integration",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "../../node_modules/.bin/tsc && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "pnpm --workspace-root prettier --write packages/react/",
@@ -13,7 +13,7 @@
     "lint:check": "oxlint .",
     "clean": "rm -rf dist",
     "dev": "vite build --watch --emptyOutDir=false",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "../../node_modules/.bin/tsc --noEmit",
     "preview": "vite preview",
     "coverage": "vitest run --coverage",
     "docs": "typedoc"

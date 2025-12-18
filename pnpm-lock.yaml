@@ -23,6 +23,9 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.6.2
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
 
   packages/nylas-connect:
     devDependencies:
