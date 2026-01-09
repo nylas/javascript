@@ -61,8 +61,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(@stencil/core@4.36.3)
       '@nylas/web-elements':
-        specifier: 2.3.0
-        version: 2.3.0(rollup@4.50.1)
+        specifier: 2.3.2
+        version: 2.3.2(rollup@4.50.1)
       '@stencil/react-output-target':
         specifier: ^1.2.0
         version: 1.2.0(@stencil/core@4.36.3)(@types/react@19.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -676,8 +676,8 @@ packages:
   '@nylas/identity@3.1.0':
     resolution: {integrity: sha512-EBW17UBAvsj1cT+BEbawdce9Uy04IsElr8hJJRB3lf8Aod/icdn0mxWdWCyCNrjW6fhRwz0Cv3Sh88DbTbC7yA==}
 
-  '@nylas/web-elements@2.3.0':
-    resolution: {integrity: sha512-4Ye4tQQeU5+al4bCL1MoCsyiU4HzLMHsIlJgbwaGiq4Sm/QoorN2BhvpQ4hv8V2nStiPQHP5bbKN36vabx5MgQ==}
+  '@nylas/web-elements@2.3.2':
+    resolution: {integrity: sha512-JH64tka6/xSBaKRgqcTJQuyauQd1eKmh3+sZ3bgN4lS9VBZccBqSIjTA7LImB88XvnuImxNRHCVicp2muXiaew==}
 
   '@oxlint/darwin-arm64@1.16.0':
     resolution: {integrity: sha512-t9sBjbcG15Jgwgw2wY+rtfKEazdkKM/YhcdyjmGYeSjBXaczLfp/gZe03taC2qUHK+t6cxSYNkOLXRLWxaf3tw==}
@@ -3731,7 +3731,7 @@ snapshots:
       react: 18.2.0
       uuid: 8.3.2
 
-  '@nylas/web-elements@2.3.0(rollup@4.50.1)':
+  '@nylas/web-elements@2.3.2(rollup@4.50.1)':
     dependencies:
       '@fullcalendar/core': 6.1.8
       '@fullcalendar/daygrid': 6.1.8(@fullcalendar/core@6.1.8)
