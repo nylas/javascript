@@ -21,6 +21,9 @@ jobs:
       pull-requests: write # to create release PRs
       id-token: write # for NPM provenance
     timeout-minutes: 15
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
 
     steps:
       - name: Checkout code
@@ -87,4 +90,33 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Only needed for installing private dependencies
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # do not remove this line (https://github.com/changesets/action/issues/98)
+          PM_CONFIG_PROVENANCE: true
+
+  # Slack notification job (only when packages are published)
+  notify:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.published == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Send Slack notification
+        run: pnpm slack:notify '${{ needs.release.outputs.publishedPackages }}' ${{ vars.SLACK_WEBHOOK_URL }}

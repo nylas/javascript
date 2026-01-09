@@ -78,7 +78,7 @@
   "dependencies": {
     "@nylas/connect": "workspace:^",
     "@nylas/core": "^1.2.0",
-    "@nylas/web-elements": "2.3.0",
+    "@nylas/web-elements": "2.3.2",
     "@stencil/react-output-target": "^1.2.0",
     "axios": "^1.7.7",
     "dayjs": "1.11.7",

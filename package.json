@@ -25,7 +25,8 @@
     "publish": "nx run-many -t build && changeset publish",
     "publish:dry-run": "nx run-many -t build && changeset publish --dry-run",
     "publish:no-build": "changeset publish",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "slack:notify": "node ./scripts/send-slack-notification.mjs"
   },
   "keywords": [
     "nylas",
@@ -68,5 +69,8 @@
     "nx": "21.5.2",
     "oxlint": "^1.16.0",
     "prettier": "^3.4.2"
+  },
+  "dependencies": {
+    "zx": "^7.2.3"
   }
 }
