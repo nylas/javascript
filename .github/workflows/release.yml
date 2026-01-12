@@ -119,4 +119,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Send Slack notification
-        run: pnpm slack:notify '${{ needs.release.outputs.publishedPackages }}' ${{ vars.SLACK_WEBHOOK_URL }}
+        run: pnpm slack:notify '${{ needs.release.outputs.publishedPackages }}' ${{ secrets.SLACK_WEBHOOK_URL }}
