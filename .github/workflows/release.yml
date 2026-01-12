@@ -32,7 +32,7 @@ jobs:
           # Need full history for changesets
           fetch-depth: 0
           # Use a token that can trigger workflows (for release PR creation)
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SDK_RELEASE_PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -89,7 +89,7 @@ jobs:
           commit: "chore: version packages"
           createGithubReleases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SDK_RELEASE_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # do not remove this line (https://github.com/changesets/action/issues/98)
           PM_CONFIG_PROVENANCE: true
