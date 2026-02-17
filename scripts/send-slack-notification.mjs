@@ -42,14 +42,14 @@ if (!slackWebhookUrl) {
 
 // Get a list of packages via pnpm nx projects
 const _packageNames = await $`pnpm nx show projects --json`.quiet();
-const packageNames = JSON.parse(_packageNames.stdout.split('\n').slice(4).join('\n'));
+const packageNames = JSON.parse(_packageNames.stdout.trim());
 
 // Get the package root for each package via pnpm nx show project [packageName]
 const pkgs = {};
 for (const packageName of packageNames) {
   // Remove the first 3 lines of the output
   const _nxPackageInfo = await $`pnpm nx show project ${packageName} --json`.quiet();
-  const nxPackageInfo = JSON.parse(_nxPackageInfo.stdout.split('\n').slice(4).join('\n'));
+  const nxPackageInfo = JSON.parse(_nxPackageInfo.stdout.trim());
 
   // Only include the packages that were published
   if (!publishedPackages.includes(packageName)) {
