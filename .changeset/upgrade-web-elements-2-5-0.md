@@ -2,7 +2,7 @@
 "@nylas/react": minor
 ---
 
-Upgrade @nylas/web-elements dependency to 2.5.0-canary-20260310171201
+Upgrade @nylas/web-elements dependency to 2.5.0
 
 ### Minor Changes
 
