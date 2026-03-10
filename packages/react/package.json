@@ -80,7 +80,7 @@
     "@nylas/core": "^1.2.0",
     "@nylas/web-elements": "2.5.0",
     "@stencil/react-output-target": "^1.2.0",
-    "axios": "^1.7.7",
+    "axios": "^1.13.5",
     "dayjs": "1.11.7",
     "lucide-react": "^0.453.0",
     "tailwind-variants": "^1.0.0",
