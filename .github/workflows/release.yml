@@ -10,7 +10,7 @@ on:
         description: "Release type"
         required: true
         type: choice
-        default: "stable"
+        default: "snapshot"
         options:
           - "stable"
           - "snapshot"
