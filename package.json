@@ -26,8 +26,7 @@
     "publish:dry-run": "nx run-many -t build && changeset publish --dry-run",
     "publish:no-build": "changeset publish",
     "postinstall": "husky install",
-    "slack:notify": "node ./scripts/send-slack-notification.mjs",
-    "sync:web-elements": "./scripts/sync-web-elements-types.sh"
+    "slack:notify": "node ./scripts/send-slack-notification.mjs"
   },
   "keywords": [
     "nylas",
