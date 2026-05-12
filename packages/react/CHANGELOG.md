@@ -1,5 +1,12 @@
 # @nylas/react
 
+## 3.2.6
+
+### Patch Changes
+
+- 521b77d: Upgrade @nylas/web-elements dependency to 2.5.7
+  - [nylas-scheduler-editor] Preserve existing Scheduler configuration settings when saving edits so custom redirect URLs and related booking flow settings are not reset by unrelated changes.
+
 ## 3.2.5
 
 ### Patch Changes
