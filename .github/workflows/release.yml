@@ -230,11 +230,33 @@ jobs:
           echo "version=$REACT_VERSION" >> "$GITHUB_OUTPUT"
           echo "safe_version=$SAFE_VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Verify consumer update token
+        env:
+          CONSUMER_TOKEN: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
+          REPOSITORY: ${{ matrix.repository }}
+        run: |
+          if [ -z "$CONSUMER_TOKEN" ]; then
+            echo "::error::Set SCHEDULER_CONSUMER_TOKEN in nylas/javascript with read/write access to nylas/dashboard-v3 and nylas/scheduler-v3."
+            echo "::error::Fine-grained token permissions: Contents read/write and Pull requests read/write for both consumer repositories."
+            exit 1
+          fi
+
+          STATUS=$(curl --silent --show-error --output /tmp/repo.json --write-out "%{http_code}" \
+            --header "Authorization: Bearer $CONSUMER_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPOSITORY")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::SCHEDULER_CONSUMER_TOKEN cannot access $REPOSITORY (GitHub API status: $STATUS)."
+            exit 1
+          fi
+
       - name: Checkout ${{ matrix.consumer }}
         uses: actions/checkout@v4
         with:
           repository: ${{ matrix.repository }}
-          token: ${{ secrets.BOT_PAT || secrets.SDK_RELEASE_PAT }}
+          token: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
           ref: main
           fetch-depth: 0
 
@@ -280,7 +302,7 @@ jobs:
 
       - name: Create or update pull request
         env:
-          GH_TOKEN: ${{ secrets.BOT_PAT || secrets.SDK_RELEASE_PAT }}
+          GH_TOKEN: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
           PACKAGE_JSON_PATH: ${{ matrix.package_json_path }}
           REACT_VERSION: ${{ steps.version.outputs.version }}
           SAFE_VERSION: ${{ steps.version.outputs.safe_version }}
