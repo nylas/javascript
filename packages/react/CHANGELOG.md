@@ -1,5 +1,65 @@
 # @nylas/react
 
+## 3.2.7
+
+### Patch Changes
+
+- 44ddeaf: Upgrade @nylas/web-elements dependency to 2.5.8:
+  - [nylas-scheduler-editor] Fixed template variable suggestions opening in Microsoft Edge when typing $ in the event title or description fields.
+  - [nylas-scheduling] Fixed selected date labels so they stay localized when the scheduler language is set or changed.
+
+## 3.2.6
+
+### Patch Changes
+
+- 521b77d: Upgrade @nylas/web-elements dependency to 2.5.7
+  - [nylas-scheduler-editor] Preserve existing Scheduler configuration settings when saving edits so custom redirect URLs and related booking flow settings are not reset by unrelated changes.
+
+## 3.2.5
+
+### Patch Changes
+
+- f78e65d: Upgrade @nylas/web-elements dependency to 2.5.5:
+  - Fix time slot selection and date picker clicks being non-functional after upgrading to v2.5.0. When configurationId or other auth props were set post-mount (e.g. via React), the scheduler entered a deferred init path where click handlers on the date picker and timeslot picker were registered before the connector existed. Clicking a date or time slot appeared to do nothing. The connector reference is now resolved at click time rather than at registration time, so all interactions work correctly regardless of when auth props arrive.
+  - [nylas-scheduling] Fix schedulerApiUrl prop being ignored on full page refresh when using React wrappers. The component now correctly waits for React's commit phase to apply props before reading schedulerApiUrl to create the scheduler connector, ensuring the correct API region is used on both client-side navigation and hard page refreshes.
+
+- f43d9c9: Upgrade @nylas/web-elements dependency to 2.5.6
+  - [nylas-scheduling] Improve localized scheduler copy so supported browser languages are reflected in the language dropdown, date labels, and empty states.
+
+## 3.2.4
+
+### Patch Changes
+
+- a9b373b: Upgrade @nylas/web-elements dependency to 2.5.4:
+  - [nylas-scheduler-editor] Fix calendar not immediately reflecting newly created, updated, or deleted events. Events now appear or disappear without requiring a page reload.
+  - scheduler Fix radio button fields in booking forms capturing the field label instead of the selected option value. Radio button selections now correctly appear in confirmation emails.
+  - Fixed scheduler date picker page disappearing in reschedule mode when external JavaScript sets inline styles on shadow DOM elements. Added VDOM key to the footer element to prevent Stencil from reusing it by position during loading-to-content transitions. Also exposed ns_footer CSS part on the footer element for external styling.
+
+## 3.2.3
+
+### Patch Changes
+
+- 5143c9f: - [nylas-scheduling] Fixed confirmation redirect URL incorrectly appending query parameters with ? instead of & when the confirmationRedirectUrl already contains existing query parameters. URLs with pre-existing parameters (e.g. JWT tokens) now correctly preserve all query parameters.
+  - Fix deferred initialization when rescheduleBookingRef or cancelBookingRef is set via JavaScript after mount (CDN / vanilla HTML pattern). Watch handlers now emit the bookingRefExtracted event, include error handling for malformed booking refs, and properly coordinate with the base provider during deferred init.
+  - [nylas-page-styling] The Page Styles section in the scheduler editor now renders translated labels by default when no custom slot content is provided. Labels for "Company logo URL", "Primary color", "Submit button label", and "Thank you message" are now available in all supported languages (en, es, fr, de, sv, zh, ja, nl, ko). The color picker's "Select a color" placeholder is also now translated.
+
+## 3.2.2
+
+### Patch Changes
+
+- bab1dad: Upgrade @nylas/web-elements dependency to 2.5.2:
+  - Fix schedulerApiUrl not being applied before the connector's first API call when using React wrappers on a full page refresh. The connector now syncs the latest schedulerApiUrl prop value before every data fetch, ensuring EU and other non-US regions work correctly regardless of prop timing.
+  - [nylas-scheduling] The scheduler now automatically detects the user's browser language and displays localized content when a supported language is available. Previously, users always saw English unless the ?lang= URL parameter or defaultLanguage prop was explicitly set.
+
+## 3.2.1
+
+### Patch Changes
+
+- 777b798: Upgrade @nylas/web-elements dependency from 2.5.0 to 2.5.1
+  - Improve error handling for authentication failures in the scheduler editor. Auth errors now display a visible error banner on the login screen instead of failing silently. The `nylasSchedulerEditorError` event is emitted with `category: 'auth'` for programmatic error handling. Session expiry detection is also improved to catch additional error patterns.
+  - Fix scheduler date handling to normalize mixed date inputs (Date, ISO string, and unix timestamp values), preventing incorrect fallback dates like 1970 and ensuring timezone-aware selected-day comparisons remain stable across components.
+  - Fix deferred initialization for booking refs in private scheduler configurations. Booking ref props (reschedule, cancel, organizer confirmation) no longer prematurely trigger initialization without proper auth credentials. Organizer confirmation salt is now correctly persisted when the booking ref is set dynamically.
+
 ## 3.2.0
 
 ### Minor Changes

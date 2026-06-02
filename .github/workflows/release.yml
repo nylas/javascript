@@ -187,3 +187,156 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
+  update-scheduler-consumers:
+    name: Update Scheduler Consumers
+    needs: release
+    if: needs.release.outputs.published == 'true' && contains(needs.release.outputs.publishedPackages, '@nylas/react')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - consumer: Dashboard v3
+            repository: nylas/dashboard-v3
+            package_json_path: packages/client/package.json
+            node_version: 24.13.0
+            pnpm_version: 10.15.1
+            dependency_prefix: ''
+            commit_scope: client
+          - consumer: Scheduler v3
+            repository: nylas/scheduler-v3
+            package_json_path: package.json
+            node_version: 22.12.0
+            pnpm_version: 10.7.1
+            dependency_prefix: '^'
+            commit_scope: deps
+
+    steps:
+      - name: Resolve published @nylas/react version
+        id: version
+        run: |
+          REACT_VERSION=$(echo '${{ needs.release.outputs.publishedPackages }}' | jq -r '.[] | select(.name == "@nylas/react") | .version // empty')
+          if [ -z "$REACT_VERSION" ]; then
+            echo "Could not parse @nylas/react version from publishedPackages"
+            exit 1
+          fi
+
+          SAFE_VERSION=$(echo "$REACT_VERSION" | tr -c '[:alnum:]' '-')
+          SAFE_VERSION="${SAFE_VERSION%-}"
+
+          echo "version=$REACT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "safe_version=$SAFE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify consumer update token
+        env:
+          CONSUMER_TOKEN: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
+          REPOSITORY: ${{ matrix.repository }}
+        run: |
+          if [ -z "$CONSUMER_TOKEN" ]; then
+            echo "::error::Set SCHEDULER_CONSUMER_TOKEN in nylas/javascript with read/write access to nylas/dashboard-v3 and nylas/scheduler-v3."
+            echo "::error::Fine-grained token permissions: Contents read/write and Pull requests read/write for both consumer repositories."
+            exit 1
+          fi
+
+          STATUS=$(curl --silent --show-error --output /tmp/repo.json --write-out "%{http_code}" \
+            --header "Authorization: Bearer $CONSUMER_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPOSITORY")
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::SCHEDULER_CONSUMER_TOKEN cannot access $REPOSITORY (GitHub API status: $STATUS)."
+            exit 1
+          fi
+
+      - name: Checkout ${{ matrix.consumer }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repository }}
+          token: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ matrix.pnpm_version }}
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: pnpm
+
+      - name: Update @nylas/react dependency
+        env:
+          PACKAGE_JSON_PATH: ${{ matrix.package_json_path }}
+          REACT_VERSION: ${{ steps.version.outputs.version }}
+          DEPENDENCY_PREFIX: ${{ matrix.dependency_prefix }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const packageJsonPath = process.env.PACKAGE_JSON_PATH;
+          const reactVersion = process.env.REACT_VERSION;
+          const dependencyPrefix = process.env.DEPENDENCY_PREFIX || '';
+          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+          if (!packageJson.dependencies || !Object.prototype.hasOwnProperty.call(packageJson.dependencies, '@nylas/react')) {
+            throw new Error(`${packageJsonPath} does not declare @nylas/react as a dependency`);
+          }
+
+          packageJson.dependencies['@nylas/react'] = `${dependencyPrefix}${reactVersion}`;
+          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
+          NODE
+
+      - name: Update lockfile
+        run: pnpm install --lockfile-only
+        env:
+          CI: true
+          HUSKY: 0
+
+      - name: Create or update pull request
+        env:
+          GH_TOKEN: ${{ secrets.SCHEDULER_CONSUMER_TOKEN }}
+          PACKAGE_JSON_PATH: ${{ matrix.package_json_path }}
+          REACT_VERSION: ${{ steps.version.outputs.version }}
+          SAFE_VERSION: ${{ steps.version.outputs.safe_version }}
+          REPOSITORY: ${{ matrix.repository }}
+          CONSUMER: ${{ matrix.consumer }}
+          COMMIT_SCOPE: ${{ matrix.commit_scope }}
+          JIRA_TICKET: ${{ vars.SCHEDULER_CONSUMER_UPDATE_JIRA || 'CUST-5380' }}
+        run: |
+          if git diff --quiet -- "$PACKAGE_JSON_PATH" pnpm-lock.yaml; then
+            echo "$CONSUMER already uses @nylas/react $REACT_VERSION"
+            exit 0
+          fi
+
+          BRANCH="chore/${JIRA_TICKET}-upgrade-nylas-react-${SAFE_VERSION}"
+          TITLE="[${JIRA_TICKET}] chore(${COMMIT_SCOPE}): upgrade @nylas/react to ${REACT_VERSION}"
+          BODY=$(cat <<EOF
+          Automated PR to upgrade @nylas/react to ${REACT_VERSION} after it was published from nylas/javascript.
+
+          Jira: https://nylas.atlassian.net/browse/${JIRA_TICKET}
+
+          This keeps ${CONSUMER} on the latest Scheduler component wrapper. Existing ${CONSUMER} GitHub/Cloudflare deployment workflows handle preview and staging once this PR is opened and merged.
+          EOF
+          )
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add "$PACKAGE_JSON_PATH" pnpm-lock.yaml
+          git commit -m "$TITLE"
+          git fetch origin "$BRANCH":"refs/remotes/origin/$BRANCH" || true
+          git push --force-with-lease origin "$BRANCH"
+
+          if gh pr view "$BRANCH" --repo "$REPOSITORY" >/dev/null 2>&1; then
+            gh pr edit "$BRANCH" --repo "$REPOSITORY" --title "$TITLE" --body "$BODY"
+          else
+            gh pr create --repo "$REPOSITORY" --base main --head "$BRANCH" --title "$TITLE" --body "$BODY"
+          fi
