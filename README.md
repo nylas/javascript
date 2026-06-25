@@ -10,6 +10,8 @@
   </p>
 
   <p>
+    <a href="https://www.npmjs.com/package/@nylas/connect"><img src="https://img.shields.io/npm/v/@nylas/connect?label=%40nylas%2Fconnect" alt="@nylas/connect version" /></a>
+    <a href="https://www.npmjs.com/package/@nylas/react"><img src="https://img.shields.io/npm/v/@nylas/react?label=%40nylas%2Freact" alt="@nylas/react version" /></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22%2B-green.svg" alt="Node.js" /></a>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-Ready-blue.svg" alt="TypeScript" /></a>
