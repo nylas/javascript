@@ -8,6 +8,7 @@
 /* eslint-disable */
 
 import {
+  type AdditionalParticipant,
   type BookedEventInfo,
   type CONFIGURATION_EVENT_TYPE,
   type Configuration,
@@ -20,6 +21,7 @@ import {
   type InputDropdownCustomEvent,
   type InputImageUrlCustomEvent,
   type Notification,
+  type NylasAdditionalParticipantsCustomEvent,
   type NylasBookedEventCardCustomEvent,
   type NylasBookingCalendarPickerCustomEvent,
   type NylasBookingConfirmationRedirectCustomEvent,
@@ -1393,6 +1395,9 @@ export type NylasAdditionalParticipantsEvents = {
       name: string;
     }>
   >;
+  onParticipantSearchResultSelected: EventName<
+    NylasAdditionalParticipantsCustomEvent<AdditionalParticipant>
+  >;
 };
 
 export const NylasAdditionalParticipants: StencilReactComponent<
@@ -1408,6 +1413,7 @@ export const NylasAdditionalParticipants: StencilReactComponent<
   react: React,
   events: {
     onValueChanged: "valueChanged",
+    onParticipantSearchResultSelected: "participantSearchResultSelected",
   } as NylasAdditionalParticipantsEvents,
   defineCustomElement: defineNylasAdditionalParticipants,
 });
@@ -2924,6 +2930,12 @@ export type NylasSchedulerEditorEvents = {
   onSchedulerConfigCloseClicked: EventName<
     NylasSchedulerEditorCustomEvent<HTMLNylasSchedulerEditorElement>
   >;
+  onNylasSchedulerEditorError: EventName<
+    NylasSchedulerEditorCustomEvent<{
+      notification: Notification;
+      host: HTMLElement;
+    }>
+  >;
 };
 
 export const NylasSchedulerEditor: StencilReactComponent<
@@ -2942,6 +2954,7 @@ export const NylasSchedulerEditor: StencilReactComponent<
     onLoggedIn: "loggedIn",
     onLoggedOut: "loggedOut",
     onSchedulerConfigCloseClicked: "schedulerConfigCloseClicked",
+    onNylasSchedulerEditorError: "nylasSchedulerEditorError",
   } as NylasSchedulerEditorEvents,
   defineCustomElement: defineNylasSchedulerEditor,
 });
