@@ -58,6 +58,7 @@ The package ships its own TypeScript types, and exposes three subpaths so you on
 | --- | --- |
 | `@nylas/react` | Everything below except the Connect symbols |
 | `@nylas/react/elements` | Scheduler and booking components |
+| `@nylas/react/utils` | `NylasIdentityRequestWrapper`, and the `LANGUAGE_CODE` type |
 | `@nylas/react/connect` | `useNylasConnect`, `NylasConnectButton`, and re-exports of `@nylas/connect` |
 
 > **Note:** `useNylasConnect` and `NylasConnectButton` are available **only** from `@nylas/react/connect`, not from the package root.
