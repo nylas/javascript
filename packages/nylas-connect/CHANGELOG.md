@@ -1,5 +1,11 @@
 # @nylas/connect
 
+## 1.2.6
+
+### Patch Changes
+
+- 2ab4134: Rewrite the README. The previous version's first example read the mailbox address from `result.email`, which does not exist on `ConnectResult`, and its config table documented 6 of the 11 available options.
+
 ## 1.2.5
 
 ### Patch Changes

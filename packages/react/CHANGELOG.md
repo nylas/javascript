@@ -1,5 +1,14 @@
 # @nylas/react
 
+## 3.2.17
+
+### Patch Changes
+
+- b23827f: Fix the import path in the README's Connect examples. `useNylasConnect` and `NylasConnectButton` are only exported from the `@nylas/react/connect` subpath, so the snippets that imported them from `@nylas/react` could not resolve.
+- e24f3ab: Restructure the README onto the house style shared by the other Nylas SDKs, and document the hook options, hook return values, and button props that were previously missing.
+- Updated dependencies [2ab4134]
+  - @nylas/connect@1.2.6
+
 ## 3.2.16
 
 ### Patch Changes
