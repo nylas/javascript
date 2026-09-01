@@ -90,13 +90,15 @@ Once initialized, connect a mailbox and read from it:
 const result = await nylasConnect.connect({ method: "popup" });
 console.log("Connected:", result.grantInfo?.email);
 
-const res = await fetch(
-  `https://api.us.nylas.com/v3/grants/${result.grantId}/messages?limit=5`,
-  { headers: { Authorization: `Bearer ${process.env.NYLAS_API_KEY}` } },
-);
+// Authorize with the returned access token and address the mailbox as `me`.
+const res = await fetch("https://api.us.nylas.com/v3/grants/me/messages?limit=5", {
+  headers: { Authorization: `Bearer ${result.accessToken}` },
+});
 ```
 
 The mailbox address is on `result.grantInfo`, not on `result` itself.
+
+This runs entirely in the browser, so it authorizes with the `accessToken` that `connect()` returns — never an API key, which would be inlined into your bundle. An access token covers grant-level data like the request above; application-level requests still need an API key, and those belong on your server.
 
 ### Connection methods
 
@@ -200,6 +202,26 @@ const nylasConnect = new NylasConnect({
 ```
 
 The matching backend route, plus the `state` handling that links a grant to your user, is in [backend callback handling](https://developer.nylas.com/docs/v3/auth/nylas-connect/backend-oauth/).
+
+### Backend-only flow
+
+To do the whole exchange server-side, `getAuthUrl()` builds the authorization URL **without** PKCE and without storing any state, leaving your backend to exchange the code as a confidential client using your API key.
+
+```typescript
+// Client: build the URL and send the user to it.
+const { url, state, scopes } = await nylasConnect.getAuthUrl();
+window.location.href = url;
+
+// Server: exchange the code with the Nylas Node SDK.
+const { grantId } = await nylas.auth.exchangeCodeForToken({
+  clientId: process.env.NYLAS_CLIENT_ID,
+  clientSecret: process.env.NYLAS_CLIENT_SECRET,
+  code: req.query.code,
+  redirectUri: process.env.NYLAS_REDIRECT_URI,
+});
+```
+
+Persist the returned `state` and check it when the user comes back. Because nothing is stored client-side, `callback()` and `getSession()` play no part in this flow.
 
 ### Error handling
 
