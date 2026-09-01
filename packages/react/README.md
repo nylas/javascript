@@ -31,7 +31,7 @@ or yarn
 
 - **Connect**
   - `useNylasConnect`, `NylasConnectButton`
-  - Import from `@nylas/react` or `@nylas/react/connect`
+  - Import from `@nylas/react/connect`
 
 ## Getting Started
 
@@ -121,7 +121,7 @@ The `useNylasConnect` hook provides a simple way to add OAuth authentication to 
 ### Basic Usage
 
 ```jsx
-import { useNylasConnect } from '@nylas/react';
+import { useNylasConnect } from "@nylas/react/connect";
 
 function LoginButton() {
   const { isConnected, connect, logout, grant, isLoading } = useNylasConnect({
@@ -204,7 +204,7 @@ The `NylasConnectButton` component provides a simple way to add email provider a
 ### Basic Usage
 
 ```jsx
-import { NylasConnectButton } from "@nylas/react";
+import { NylasConnectButton } from "@nylas/react/connect";
 
 function App() {
   return (
@@ -227,7 +227,7 @@ function App() {
 For applications that use external identity providers (via JWKS), you can pass identity provider tokens during authentication:
 
 ```jsx
-import { NylasConnectButton } from "@nylas/react";
+import { NylasConnectButton } from "@nylas/react/connect";
 
 function App() {
   // Function to retrieve JWT token from your external identity provider
@@ -258,7 +258,7 @@ function App() {
 For enhanced security, you can handle the OAuth code exchange on your backend:
 
 ```jsx
-import { NylasConnectButton } from "@nylas/react";
+import { NylasConnectButton } from "@nylas/react/connect";
 
 function App() {
   const handleCodeExchange = async (params) => {
