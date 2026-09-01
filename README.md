@@ -1,10 +1,34 @@
-# Nylas JavaScript
+<div align="center">
+  <a href="https://www.nylas.com/">
+    <img width="100%" alt="Nylas" src="https://github.com/user-attachments/assets/137517ae-244d-47a5-8ca7-b12984971fc4" />
+  </a>
 
-> Modern, open source JavaScript/TypeScript packages for integrating with the Nylas platform
+  <h1>Nylas JavaScript</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-22%2B-green.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+  <p>
+    <strong>Modern, open source JavaScript/TypeScript packages for Nylas — the infrastructure that powers communications</strong>
+  </p>
+
+  <p>
+    <a href="https://www.npmjs.com/package/@nylas/connect"><img src="https://img.shields.io/npm/v/@nylas/connect?label=%40nylas%2Fconnect" alt="@nylas/connect version" /></a>
+    <a href="https://www.npmjs.com/package/@nylas/react"><img src="https://img.shields.io/npm/v/@nylas/react?label=%40nylas%2Freact" alt="@nylas/react version" /></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22%2B-green.svg" alt="Node.js" /></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-Ready-blue.svg" alt="TypeScript" /></a>
+  </p>
+
+  <p>
+    <a href="https://developer.nylas.com/">📖 Docs</a> ·
+    <a href="https://developer.nylas.com/docs/api/v3/">📚 API Reference</a> ·
+    <a href="https://dashboard-v3.nylas.com/register">🚀 Sign up</a> ·
+    <a href="https://github.com/orgs/nylas-samples/repositories">💡 Samples</a> ·
+    <a href="https://forums.nylas.com">💬 Forum</a>
+  </p>
+</div>
+
+<br />
+
+Modern, open source JavaScript/TypeScript packages for integrating with [Nylas](https://developer.nylas.com/) — the infrastructure that powers communications. Integrate with Gmail, Microsoft, IMAP, Zoom, and 250+ providers in 5 minutes, or give your AI agent its own mailbox. Covers [Agent Accounts](https://developer.nylas.com/docs/v3/agent-accounts/), [Email](https://developer.nylas.com/docs/v3/email/), [Calendar](https://developer.nylas.com/docs/v3/calendar/), [Contacts](https://developer.nylas.com/docs/v3/email/contacts/), [Scheduler](https://developer.nylas.com/docs/v3/scheduler/), and [Notetaker](https://developer.nylas.com/docs/v3/notetaker/).
 
 ## 📦 Packages
 
@@ -78,7 +102,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 - **📚 Documentation**: [developer.nylas.com](https://developer.nylas.com)
 - **💬 Community**: [Forums](https://forums.nylas.com)
-- **🐛 Issues**: [GitHub Issues](https://github.com/nylas/web/issues)
+- **🐛 Issues**: [GitHub Issues](https://github.com/nylas/javascript/issues)
 
 ---
 
