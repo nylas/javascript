@@ -31,7 +31,7 @@ React components and hooks for Nylas API integration.
 
 - **TypeScript-first** with full type safety
 - Works with React 18 and 19
-- Pre-built UI components for email, calendar, and contacts
+- Pre-built Scheduler and booking UI components
 - OAuth connection hooks and utilities
 - Modular exports for tree-shaking
 
