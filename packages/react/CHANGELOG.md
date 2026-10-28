@@ -1,5 +1,11 @@
 # @nylas/react
 
+## 3.2.19
+
+### Patch Changes
+
+- c9294fc: Upgrade @nylas/web-elements dependency to 2.6.2
+
 ## 3.2.18
 
 ### Patch Changes
