@@ -1,5 +1,11 @@
 # @nylas/react
 
+## 3.2.21
+
+### Patch Changes
+
+- 4fdcd14: Upgrade @nylas/web-elements dependency to 2.7.1
+
 ## 3.2.20
 
 ### Patch Changes
